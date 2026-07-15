@@ -3,656 +3,1550 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI PM Foundations</title>
+<title>AI PM Foundations — Interactive Tutorial</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root{
-  --bg:#08080a;--bg2:#0f0f12;--surface:rgba(255,248,235,.025);
-  --border:rgba(255,248,235,.06);--border-h:rgba(255,248,235,.12);
-  --fg:#f5f0e8;--fg2:#a39e94;--fg3:#5c5850;
-  --gold:#c8a254;--gold-d:rgba(200,162,84,.12);--gold-g:rgba(200,162,84,.25);
-  --red:#c75454;--red-d:rgba(199,84,84,.1);
-  --green:#54c88a;--green-d:rgba(84,200,138,.1);
-  --blue:#5a8fc9;--blue-d:rgba(90,143,201,.1);
-  --ease:cubic-bezier(.22,1,.36,1);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--fg);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-h1,h2,h3,h4,h5,h6{font-family:'Fraunces',serif;font-weight:500}
-::selection{background:var(--gold);color:var(--bg)}
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--fg3);border-radius:3px}
+  :root {
+    --bg: #0c0f0a;
+    --bg-elevated: #151a12;
+    --card: #1a2016;
+    --card-hover: #222d1c;
+    --border: #2a3624;
+    --border-light: #3a4a32;
+    --fg: #e8efe4;
+    --fg-muted: #8a9a80;
+    --fg-dim: #5a6a52;
+    --accent: #c8e64a;
+    --accent-dim: rgba(200, 230, 74, 0.15);
+    --accent-glow: rgba(200, 230, 74, 0.3);
+    --warm: #e8a84a;
+    --warm-dim: rgba(232, 168, 74, 0.15);
+    --danger: #e85a5a;
+    --danger-dim: rgba(232, 90, 90, 0.12);
+    --success: #4ae88a;
+    --success-dim: rgba(74, 232, 138, 0.12);
+  }
 
-.grain{position:fixed;inset:0;z-index:9999;pointer-events:none;opacity:.035;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:200px 200px}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.blob{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none;z-index:0}
-.blob-1{width:600px;height:600px;top:-10%;left:-5%;background:var(--gold);opacity:.025;animation:drift1 25s ease-in-out infinite}
-.blob-2{width:500px;height:500px;bottom:-10%;right:-8%;background:var(--blue);opacity:.02;animation:drift2 30s ease-in-out infinite}
-@keyframes drift1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,40px)}}
-@keyframes drift2{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,-30px)}}
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
 
-.progress-bar{position:fixed;top:0;left:0;right:0;height:2px;z-index:100;background:var(--border)}
-.progress-fill{height:100%;background:var(--gold);transition:width .7s var(--ease);box-shadow:0 0 14px var(--gold-g),0 0 4px var(--gold-g)}
+  h1, h2, h3, h4, h5, h6 { font-family: 'Space Grotesk', sans-serif; }
 
-.nav-dots{position:fixed;right:28px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:14px}
-.nav-dot{width:8px;height:8px;border-radius:50%;background:var(--fg3);cursor:pointer;border:none;padding:0;transition:all .4s var(--ease);opacity:.5}
-.nav-dot.active{background:var(--gold);opacity:1;box-shadow:0 0 8px var(--gold-g);transform:scale(1.4)}
-.nav-dot:hover:not(.active){opacity:.8;background:var(--fg2)}
+  /* Background atmosphere */
+  .bg-atmosphere {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 600px 400px at 15% 20%, rgba(200,230,74,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 500px at 85% 70%, rgba(232,168,74,0.03) 0%, transparent 70%),
+      radial-gradient(ellipse 800px 300px at 50% 100%, rgba(200,230,74,0.02) 0%, transparent 60%);
+  }
 
-.sec{display:none;min-height:100vh;position:relative;z-index:1;padding:100px 32px 80px;opacity:0;transform:translateY(24px)}
-.sec.active{display:block}
-.sec.visible{opacity:1;transform:translateY(0);transition:opacity .55s var(--ease),transform .55s var(--ease)}
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(200,230,74,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,230,74,0.02) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 70%);
+  }
 
-[data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
-[data-reveal].shown{opacity:1;transform:translateY(0)}
+  /* Progress bar */
+  .progress-track {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 100;
+    background: var(--border);
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    box-shadow: 0 0 12px var(--accent-glow);
+  }
 
-.glass{background:var(--surface);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--border);border-radius:16px;position:relative;overflow:hidden}
-.glass::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,248,235,.08),transparent);pointer-events:none}
+  /* Navigation dots */
+  .nav-dots {
+    position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+    z-index: 90; display: flex; flex-direction: column; gap: 12px;
+  }
+  .nav-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border-light); cursor: pointer;
+    transition: all 0.3s ease; border: none; padding: 0;
+  }
+  .nav-dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+    transform: scale(1.3);
+  }
+  .nav-dot:hover { background: var(--fg-muted); }
+  .nav-dot.active:hover { background: var(--accent); }
 
-.btn-gold{background:var(--gold);color:var(--bg);font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;padding:13px 32px;border-radius:10px;border:none;cursor:pointer;font-size:14px;letter-spacing:.02em;transition:all .3s var(--ease)}
-.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 24px var(--gold-g)}
-.btn-gold:active{transform:translateY(0);box-shadow:none}
-.btn-ghost{background:transparent;color:var(--fg2);font-family:'Plus Jakarta Sans',sans-serif;font-weight:500;padding:13px 28px;border-radius:10px;border:1px solid var(--border);cursor:pointer;font-size:14px;transition:all .3s var(--ease)}
-.btn-ghost:hover{border-color:var(--border-h);color:var(--fg);background:var(--surface)}
+  /* Sections */
+  .tutorial-section {
+    display: none; opacity: 0;
+    min-height: 100vh; position: relative; z-index: 1;
+    padding: 80px 24px 60px;
+  }
+  .tutorial-section.active {
+    display: block;
+    animation: fadeSlideIn 0.5s ease forwards;
+  }
 
-.qopt{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;cursor:pointer;text-align:left;width:100%;color:var(--fg);font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;gap:14px;transition:all .35s var(--ease)}
-.qopt:hover:not(.locked){border-color:var(--border-h);background:rgba(255,248,235,.04);transform:translateX(2px)}
-.qopt .ql{width:28px;height:28px;border-radius:7px;background:rgba(255,248,235,.04);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:var(--fg3);flex-shrink:0;transition:all .35s var(--ease);font-family:'Fraunces',serif}
-.qopt.correct{border-color:var(--green);background:var(--green-d)}
-.qopt.correct .ql{background:var(--green);color:var(--bg)}
-.qopt.wrong{border-color:var(--red);background:var(--red-d)}
-.qopt.wrong .ql{background:var(--red);color:#fff}
-.qopt.locked{pointer-events:none}
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-.fcard{perspective:800px;cursor:pointer}
-.fcard-inner{transition:transform .55s var(--ease);transform-style:preserve-3d;position:relative}
-.fcard.flipped .fcard-inner{transform:rotateY(180deg)}
-.fcard-face{backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px}
-.fcard-back{position:absolute;inset:0;transform:rotateY(180deg)}
+  @keyframes fadeSlideOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
+  }
 
-.lc-step{padding:14px 18px;border-left:2px solid var(--border);cursor:pointer;transition:all .35s var(--ease);border-radius:0 8px 8px 0}
-.lc-step:hover{border-left-color:var(--fg3)}
-.lc-step.on{border-left-color:var(--gold);background:var(--gold-d)}
+  /* Cards */
+  .concept-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .concept-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.3s ease;
+  }
+  .concept-card:hover {
+    background: var(--card-hover);
+    border-color: var(--border-light);
+    transform: translateY(-2px);
+  }
+  .concept-card:hover::before { opacity: 1; }
+  .concept-card.flipped { border-color: var(--accent); }
 
-.ditem{padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:grab;font-size:13px;user-select:none;transition:all .25s var(--ease)}
-.ditem:active{cursor:grabbing}
-.ditem.dragging{opacity:.4;transform:scale(.96)}
-.ditem.placed{border-color:var(--green);background:var(--green-d);cursor:default}
-.dzone{border:1.5px dashed var(--border);border-radius:12px;padding:14px;min-height:56px;transition:all .3s var(--ease);display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
-.dzone.over{border-color:var(--gold);background:var(--gold-d)}
-.dzone.done{border-style:solid;border-color:var(--green);background:var(--green-d)}
+  .card-front, .card-back {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  .concept-card.flipped .card-front { opacity: 0; transform: scale(0.95); position: absolute; }
+  .concept-card.flipped .card-back { opacity: 1; transform: scale(1); }
+  .card-back { opacity: 0; transform: scale(1.05); }
 
-.dnode{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 20px;cursor:pointer;transition:all .35s var(--ease)}
-.dnode:hover{border-color:var(--border-h);transform:translateY(-1px)}
-.dnode.chosen{border-color:var(--gold);background:var(--gold-d);pointer-events:none}
+  /* Buttons */
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 15px;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px var(--accent-glow);
+  }
+  .btn-primary:active { transform: translateY(0); }
 
-.ifield{background:rgba(255,248,235,.02);border:1px solid var(--border);border-radius:10px;padding:14px 18px;color:var(--fg);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;width:100%;transition:border-color .3s ease;outline:none;resize:vertical;min-height:72px;line-height:1.6}
-.ifield:focus{border-color:var(--gold)}
-.ifield::placeholder{color:var(--fg3)}
+  .btn-secondary {
+    background: transparent;
+    color: var(--fg);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-size: 15px;
+  }
+  .btn-secondary:hover {
+    border-color: var(--fg-muted);
+    background: var(--card);
+  }
 
-.tag{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  /* Quiz options */
+  .quiz-option {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    width: 100%;
+    color: var(--fg);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .quiz-option:hover:not(.selected):not(.correct):not(.wrong) {
+    border-color: var(--fg-dim);
+    background: var(--card-hover);
+  }
+  .quiz-option .option-letter {
+    width: 30px; height: 30px; border-radius: 6px;
+    background: var(--bg-elevated);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 13px;
+    color: var(--fg-muted); flex-shrink: 0;
+    transition: all 0.25s ease;
+  }
+  .quiz-option.correct {
+    border-color: var(--success);
+    background: var(--success-dim);
+  }
+  .quiz-option.correct .option-letter {
+    background: var(--success); color: var(--bg);
+  }
+  .quiz-option.wrong {
+    border-color: var(--danger);
+    background: var(--danger-dim);
+  }
+  .quiz-option.wrong .option-letter {
+    background: var(--danger); color: white;
+  }
 
-.toast{position:fixed;bottom:36px;left:50%;transform:translateX(-50%) translateY(60px);background:rgba(15,15,18,.92);backdrop-filter:blur(20px);border:1px solid var(--border-h);border-radius:12px;padding:13px 22px;z-index:200;opacity:0;transition:all .45s var(--ease);font-size:13px;display:flex;align-items:center;gap:10px;max-width:88vw;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* Decision tree */
+  .decision-node {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .decision-node:hover { border-color: var(--accent); }
+  .decision-node.chosen {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .decision-node .node-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
 
-.float-pts{position:fixed;pointer-events:none;z-index:300;font-family:'Fraunces',serif;font-weight:700;font-size:18px;color:var(--gold);opacity:0;transition:all .8s var(--ease)}
-.float-pts.go{opacity:1;transform:translateY(-30px)}
+  /* Lifecycle step */
+  .lifecycle-step {
+    padding: 16px 20px;
+    border-left: 3px solid var(--border);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  .lifecycle-step:hover { border-left-color: var(--fg-dim); }
+  .lifecycle-step.active {
+    border-left-color: var(--accent);
+    background: var(--accent-dim);
+    border-radius: 0 8px 8px 0;
+  }
+  .lifecycle-step .step-num {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700; font-size: 12px;
+    color: var(--fg-dim); transition: color 0.3s ease;
+  }
+  .lifecycle-step.active .step-num { color: var(--accent); }
 
-@media(max-width:768px){
-  .nav-dots{right:14px;gap:10px}
-  .nav-dot{width:6px;height:6px}
-  .sec{padding:80px 18px 60px}
-  .resp-col{grid-template-columns:1fr!important}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  /* Scenario cards */
+  .scenario-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+  .scenario-card.highlight {
+    border-color: var(--warm);
+    background: var(--warm-dim);
+  }
+
+  /* Tag */
+  .tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  /* Tooltip / Toast */
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    padding: 14px 24px;
+    z-index: 200;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    font-size: 14px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    display: flex; align-items: center; gap: 10px;
+    max-width: 90vw;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Score badge */
+  .score-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,230,74,0.25);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600; font-size: 13px;
+    color: var(--accent);
+  }
+
+  /* Drag items */
+  .drag-item {
+    padding: 10px 16px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    user-select: none;
+  }
+  .drag-item:active { cursor: grabbing; }
+  .drag-item.dragging { opacity: 0.5; transform: scale(0.95); }
+  .drag-item.placed {
+    border-color: var(--success);
+    background: var(--success-dim);
+    cursor: default;
+  }
+
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    min-height: 60px;
+    transition: all 0.3s ease;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+  }
+  .drop-zone.over {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .drop-zone.correct-zone {
+    border-color: var(--success);
+    background: var(--success-dim);
+    border-style: solid;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+
+  /* Floating particles */
+  .particle {
+    position: fixed; width: 3px; height: 3px;
+    background: var(--accent); border-radius: 50%;
+    pointer-events: none; z-index: 0;
+    opacity: 0;
+    animation: floatParticle 8s infinite ease-in-out;
+  }
+  @keyframes floatParticle {
+    0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+    20% { opacity: 0.4; }
+    50% { opacity: 0.2; transform: translateY(-80px) scale(1); }
+    80% { opacity: 0; }
+  }
+
+  /* Input styling */
+  .input-field {
+    background: var(--bg-elevated);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    width: 100%;
+    transition: border-color 0.25s ease;
+    outline: none;
+  }
+  .input-field:focus { border-color: var(--accent); }
+  .input-field::placeholder { color: var(--fg-dim); }
+
+  textarea.input-field { resize: vertical; min-height: 80px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-dots { right: 12px; gap: 8px; }
+    .nav-dot { width: 8px; height: 8px; }
+    .tutorial-section { padding: 70px 16px 40px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="grain"></div>
-<div class="blob blob-1"></div>
-<div class="blob blob-2"></div>
-<div class="progress-bar"><div class="progress-fill" id="pf" style="width:0%"></div></div>
-<nav class="nav-dots" id="nd" aria-label="Sections"></nav>
-<div class="toast" id="toast"></div>
-<div class="float-pts" id="floatPts">+1</div>
+<!-- Background -->
+<div class="bg-atmosphere"></div>
+<div class="bg-grid"></div>
 
-<!-- S0: Welcome -->
-<section class="sec active" id="s0">
-<div class="max-w-xl mx-auto text-center" style="padding-top:14vh">
-  <div data-reveal style="margin-bottom:36px">
-    <span class="tag" style="background:var(--gold-d);color:var(--gold);border:1px solid rgba(200,162,84,.15)">
-      <i class="fa-solid fa-bolt" style="font-size:9px"></i> Interactive Tutorial
-    </span>
-  </div>
-  <h1 data-reveal style="font-size:clamp(38px,7vw,62px);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:24px">
-    AI Product<br>Management<br><span style="color:var(--gold)">Foundations</span>
-  </h1>
-  <p data-reveal style="font-size:17px;color:var(--fg2);line-height:1.75;max-width:440px;margin:0 auto 48px;font-weight:300">
-    A hands-on walkthrough of the frameworks, mental models, and decisions you'll face building AI-powered products.
-  </p>
-  <div data-reveal style="display:flex;flex-wrap:wrap;gap:28px;justify-content:center;margin-bottom:56px;font-size:13px;color:var(--fg3);font-weight:400">
-    <span><i class="fa-regular fa-clock" style="color:var(--gold);margin-right:6px"></i>10 minutes</span>
-    <span><i class="fa-regular fa-hand-pointer" style="color:var(--gold);margin-right:6px"></i>6 exercises</span>
-    <span><i class="fa-solid fa-trophy" style="color:var(--gold);margin-right:6px"></i>Score tracked</span>
-  </div>
-  <div data-reveal>
-    <button class="btn-gold" onclick="go(1)" style="font-size:15px;padding:15px 40px;letter-spacing:.03em">
-      Begin <i class="fa-solid fa-arrow-right" style="margin-left:10px;font-size:12px"></i>
+<!-- Floating particles -->
+<div id="particles"></div>
+
+<!-- Progress bar -->
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+</div>
+
+<!-- Navigation dots -->
+<nav class="nav-dots" id="navDots" aria-label="Tutorial sections"></nav>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== SECTION 0: Welcome ===== -->
+<section class="tutorial-section active" id="section-0" data-title="Welcome">
+  <div class="max-w-2xl mx-auto text-center" style="padding-top: 12vh;">
+    <div style="margin-bottom: 32px;">
+      <span class="tag" style="background: var(--accent-dim); color: var(--accent); border: 1px solid rgba(200,230,74,0.2);">
+        <i class="fa-solid fa-bolt" style="font-size:10px;"></i> INTERACTIVE TUTORIAL
+      </span>
+    </div>
+    <h1 style="font-size: clamp(36px, 6vw, 56px); font-weight: 700; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1.5px;">
+      AI Product Management<br>
+      <span style="color: var(--accent);">Foundations</span>
+    </h1>
+    <p style="font-size: 18px; color: var(--fg-muted); line-height: 1.7; max-width: 520px; margin: 0 auto 40px;">
+      A hands-on walkthrough of the core frameworks, mental models, and decisions you'll face as a PM building AI-powered products.
+    </p>
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; margin-bottom: 48px; font-size: 14px; color: var(--fg-dim);">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="fa-regular fa-clock" style="color: var(--accent);"></i> ~10 minutes
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="fa-regular fa-hand-pointer" style="color: var(--accent);"></i> 6 interactive exercises
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <i class="fa-solid fa-trophy" style="color: var(--accent);"></i> Track your score
+      </div>
+    </div>
+    <button class="btn-primary" onclick="goToSection(1)" style="font-size: 16px; padding: 14px 36px;">
+      Start Learning <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
     </button>
   </div>
-</div>
 </section>
 
-<!-- S1: AI vs Traditional -->
-<section class="sec" id="s1">
-<div class="max-w-2xl mx-auto">
-  <div data-reveal><span class="tag" style="background:var(--gold-d);color:var(--gold);font-size:10px">01 — 06</span></div>
-  <h2 data-reveal style="font-size:clamp(28px,4vw,38px);font-weight:700;margin:16px 0 8px;letter-spacing:-.02em">What Makes AI Products Different</h2>
-  <p data-reveal style="color:var(--fg2);margin-bottom:40px;font-size:15px;line-height:1.7;font-weight:300">Traditional software is deterministic. AI products are <em style="color:var(--fg)">probabilistic</em>. That single distinction reshapes everything a PM does.</p>
+<!-- ===== SECTION 1: What Makes AI Products Different ===== -->
+<section class="tutorial-section" id="section-1" data-title="AI vs Traditional">
+  <div class="max-w-3xl mx-auto">
+    <div style="margin-bottom: 8px;">
+      <span class="tag" style="background: var(--accent-dim); color: var(--accent); font-size: 11px;">01 / 06</span>
+    </div>
+    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">What Makes AI Products Different</h2>
+    <p style="color: var(--fg-muted); margin-bottom: 36px; font-size: 16px; line-height: 1.6;">
+      Traditional software is deterministic — same input, same output. AI products are <em>probabilistic</em>. This single difference reshapes everything a PM does.
+    </p>
 
-  <div data-reveal class="grid gap-4 resp-col" style="grid-template-columns:1fr 1fr;margin-bottom:40px">
-    <div class="fcard" onclick="this.classList.toggle('flipped')">
-      <div class="fcard-inner" style="min-height:200px">
-        <div class="fcard-face fcard-front glass" style="padding:24px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-            <div style="width:32px;height:32px;border-radius:8px;background:rgba(255,248,235,.04);display:flex;align-items:center;justify-content:center;color:var(--fg3)"><i class="fa-solid fa-code" style="font-size:13px"></i></div>
-            <span style="font-weight:600;font-size:14px">Traditional Software</span>
+    <!-- Interactive comparison: click to reveal differences -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px;" id="compareGrid">
+      <div class="concept-card" onclick="toggleCompare(this, 'traditional')">
+        <div class="card-front">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--bg-elevated);display:flex;align-items:center;justify-content:center;color:var(--fg-dim);font-size:14px;">
+              <i class="fa-solid fa-code"></i>
+            </div>
+            <span style="font-family:'Space Grotesk';font-weight:600;font-size:15px;">Traditional Software</span>
           </div>
-          <p style="color:var(--fg3);font-size:13px;font-weight:300">Tap to explore</p>
+          <p style="color:var(--fg-muted);font-size:14px;">Click to explore characteristics</p>
         </div>
-        <div class="fcard-face fcard-back glass" style="padding:24px;border-color:var(--fg3)">
-          <ul style="font-size:13px;color:var(--fg2);line-height:2;list-style:none">
-            <li><i class="fa-solid fa-minus" style="color:var(--fg3);margin-right:8px;font-size:8px"></i>Deterministic output</li>
-            <li><i class="fa-solid fa-minus" style="color:var(--fg3);margin-right:8px;font-size:8px"></i>Rules defined by developers</li>
-            <li><i class="fa-solid fa-minus" style="color:var(--fg3);margin-right:8px;font-size:8px"></i>Edge cases are enumerable</li>
-            <li><i class="fa-solid fa-minus" style="color:var(--fg3);margin-right:8px;font-size:8px"></i>Bugs = logic errors</li>
+        <div class="card-back">
+          <h4 style="font-weight:600;margin-bottom:10px;color:var(--fg);">Traditional Software</h4>
+          <ul style="font-size:14px;color:var(--fg-muted);line-height:1.8;list-style:none;">
+            <li><i class="fa-solid fa-check" style="color:var(--fg-dim);margin-right:6px;font-size:11px;"></i>Deterministic: same input = same output</li>
+            <li><i class="fa-solid fa-check" style="color:var(--fg-dim);margin-right:6px;font-size:11px;"></i>Rules defined by developers</li>
+            <li><i class="fa-solid fa-check" style="color:var(--fg-dim);margin-right:6px;font-size:11px;"></i>Testing: edge cases are enumerable</li>
+            <li><i class="fa-solid fa-check" style="color:var(--fg-dim);margin-right:6px;font-size:11px;"></i>Bugs = logic errors</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="concept-card" onclick="toggleCompare(this, 'ai')">
+        <div class="card-front">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <div style="width:32px;height:32px;border-radius:8px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:14px;">
+              <i class="fa-solid fa-brain"></i>
+            </div>
+            <span style="font-family:'Space Grotesk';font-weight:600;font-size:15px;">AI-Powered Product</span>
+          </div>
+          <p style="color:var(--fg-muted);font-size:14px;">Click to explore characteristics</p>
+        </div>
+        <div class="card-back">
+          <h4 style="font-weight:600;margin-bottom:10px;color:var(--accent);">AI-Powered Product</h4>
+          <ul style="font-size:14px;color:var(--fg-muted);line-height:1.8;list-style:none;">
+            <li><i class="fa-solid fa-check" style="color:var(--accent);margin-right:6px;font-size:11px;"></i>Probabilistic: outputs vary</li>
+            <li><i class="fa-solid fa-check" style="color:var(--accent);margin-right:6px;font-size:11px;"></i>Behavior learned from data</li>
+            <li><i class="fa-solid fa-check" style="color:var(--accent);margin-right:6px;font-size:11px;"></i>Testing: infinite edge cases</li>
+            <li><i class="fa-solid fa-check" style="color:var(--accent);margin-right:6px;font-size:11px;"></i>"Bugs" = data/model/human issues</li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="fcard" onclick="this.classList.toggle('flipped')">
-      <div class="fcard-inner" style="min-height:200px">
-        <div class="fcard-face fcard-front glass" style="padding:24px">
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-            <div style="width:32px;height:32px;border-radius:8px;background:var(--gold-d);display:flex;align-items:center;justify-content:center;color:var(--gold)"><i class="fa-solid fa-brain" style="font-size:13px"></i></div>
-            <span style="font-weight:600;font-size:14px">AI-Powered Product</span>
+
+    <!-- Mini quiz -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;" id="quiz1">
+      <p style="font-weight:600;margin-bottom:4px;font-family:'Space Grotesk';">Quick Check</p>
+      <p style="color:var(--fg-muted);font-size:14px;margin-bottom:16px;">A user reports your AI feature gave a "wrong" answer. Which category does this MOST likely fall into?</p>
+      <div style="display:flex;flex-direction:column;gap:10px;" id="quiz1Options">
+        <button class="quiz-option" data-answer="wrong" onclick="answerQuiz1(this)">
+          <span class="option-letter">A</span>
+          <span>A traditional software bug — a logic error in the code</span>
+        </button>
+        <button class="quiz-option" data-answer="correct" onclick="answerQuiz1(this)">
+          <span class="option-letter">B</span>
+          <span>It depends — could be a data issue, model limitation, or expectation mismatch</span>
+        </button>
+        <button class="quiz-option" data-answer="wrong" onclick="answerQuiz1(this)">
+          <span class="option-letter">C</span>
+          <span>Always a model accuracy problem that needs retraining</span>
+        </button>
+      </div>
+      <div id="quiz1Feedback" style="margin-top:14px;font-size:14px;display:none;"></div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:32px;">
+      <button class="btn-primary" onclick="goToSection(2)">
+        Next: AI Product Lifecycle <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 2: AI Product Lifecycle ===== -->
+<section class="tutorial-section" id="section-2" data-title="Lifecycle">
+  <div class="max-w-3xl mx-auto">
+    <div style="margin-bottom: 8px;">
+      <span class="tag" style="background: var(--accent-dim); color: var(--accent); font-size: 11px;">02 / 06</span>
+    </div>
+    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">The AI Product Lifecycle</h2>
+    <p style="color: var(--fg-muted); margin-bottom: 36px; font-size: 16px; line-height: 1.6;">
+      Unlike traditional products, AI products have a data loop. Click each phase to understand what the PM does at each stage.
+    </p>
+
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:24px;">
+      <!-- Left: steps -->
+      <div style="display:flex;flex-direction:column;gap:4px;" id="lifecycleSteps">
+        <div class="lifecycle-step active" onclick="showLifecycle(0)">
+          <span class="step-num">01</span>
+          <p style="font-weight:600;font-size:15px;margin-top:2px;">Problem & Data Scoping</p>
+        </div>
+        <div class="lifecycle-step" onclick="showLifecycle(1)">
+          <span class="step-num">02</span>
+          <p style="font-weight:600;font-size:15px;margin-top:2px;">Data Acquisition & Prep</p>
+        </div>
+        <div class="lifecycle-step" onclick="showLifecycle(2)">
+          <span class="step-num">03</span>
+          <p style="font-weight:600;font-size:15px;margin-top:2px;">Model Development</p>
+        </div>
+        <div class="lifecycle-step" onclick="showLifecycle(3)">
+          <span class="step-num">04</span>
+          <p style="font-weight:600;font-size:15px;margin-top:2px;">Integration & UX Design</p>
+        </div>
+        <div class="lifecycle-step" onclick="showLifecycle(4)">
+          <span class="step-num">05</span>
+          <p style="font-weight:600;font-size:15px;margin-top:2px;">Evaluation & Launch</p>
+        </div>
+        <div class="lifecycle-step" onclick="showLifecycle(5)">
+          <span class="step-num">06</span>
+          <p style="font-weight:600;font-size:15px;margin-top:2px;">Monitoring & Feedback Loop</p>
+        </div>
+      </div>
+
+      <!-- Right: detail panel -->
+      <div id="lifecycleDetail" style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;min-height:280px;">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;">
+      <button class="btn-secondary" onclick="goToSection(1)">
+        <i class="fa-solid fa-arrow-left" style="margin-right:8px;"></i> Back
+      </button>
+      <button class="btn-primary" onclick="goToSection(3)">
+        Key Concepts <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: Key Concepts ===== -->
+<section class="tutorial-section" id="section-3" data-title="Key Concepts">
+  <div class="max-w-3xl mx-auto">
+    <div style="margin-bottom: 8px;">
+      <span class="tag" style="background: var(--accent-dim); color: var(--accent); font-size: 11px;">03 / 06</span>
+    </div>
+    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">Key Concepts Every AI PM Must Know</h2>
+    <p style="color: var(--fg-muted); margin-bottom: 32px; font-size: 16px; line-height: 1.6;">
+      Click each card to flip it and see the PM-relevant explanation.
+    </p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:32px;" id="conceptCards">
+      <!-- Filled by JS -->
+    </div>
+
+    <!-- Categorization exercise -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;">
+      <p style="font-weight:600;margin-bottom:4px;font-family:'Space Grotesk';">Exercise: Categorize These Tasks</p>
+      <p style="color:var(--fg-muted);font-size:14px;margin-bottom:16px;">Drag each item to the correct category. Is it a PM responsibility or a Data Scientist responsibility?</p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+        <!-- Source items -->
+        <div>
+          <p style="font-size:12px;color:var(--fg-dim);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Tasks</p>
+          <div id="dragSource" style="display:flex;flex-direction:column;gap:8px;">
+            <!-- Filled by JS -->
           </div>
-          <p style="color:var(--fg3);font-size:13px;font-weight:300">Tap to explore</p>
         </div>
-        <div class="fcard-face fcard-back glass" style="padding:24px;border-color:var(--gold)">
-          <ul style="font-size:13px;color:var(--fg2);line-height:2;list-style:none">
-            <li><i class="fa-solid fa-minus" style="color:var(--gold);margin-right:8px;font-size:8px"></i>Probabilistic outputs vary</li>
-            <li><i class="fa-solid fa-minus" style="color:var(--gold);margin-right:8px;font-size:8px"></i>Behavior learned from data</li>
-            <li><i class="fa-solid fa-minus" style="color:var(--gold);margin-right:8px;font-size:8px"></i>Infinite edge cases</li>
-            <li><i class="fa-solid fa-minus" style="color:var(--gold);margin-right:8px;font-size:8px"></i>"Bugs" = data/model/human</li>
-          </ul>
+
+        <!-- PM zone -->
+        <div>
+          <p style="font-size:12px;color:var(--accent);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">
+            <i class="fa-solid fa-user-tie" style="margin-right:4px;"></i> PM
+          </p>
+          <div class="drop-zone" id="dropPM" data-zone="pm"></div>
+        </div>
+
+        <!-- DS zone -->
+        <div>
+          <p style="font-size:12px;color:var(--warm);margin-bottom:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">
+            <i class="fa-solid fa-flask" style="margin-right:4px;"></i> Data Scientist
+          </p>
+          <div class="drop-zone" id="dropDS" data-zone="ds"></div>
         </div>
       </div>
+      <div id="dragFeedback" style="margin-top:14px;font-size:14px;display:none;"></div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;">
+      <button class="btn-secondary" onclick="goToSection(2)">
+        <i class="fa-solid fa-arrow-left" style="margin-right:8px;"></i> Back
+      </button>
+      <button class="btn-primary" onclick="goToSection(4)">
+        Build vs Buy <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>
+      </button>
     </div>
   </div>
+</section>
 
-  <div data-reveal class="glass" style="padding:28px" id="q1">
-    <p style="font-weight:600;font-size:14px;margin-bottom:4px;letter-spacing:.01em">Quick Check</p>
-    <p style="color:var(--fg2);font-size:13px;margin-bottom:18px;font-weight:300;line-height:1.6">A user reports your AI feature gave a "wrong" answer. Which is most likely?</p>
-    <div style="display:flex;flex-direction:column;gap:10px" id="q1o">
-      <button class="qopt" data-a="0" onclick="aq1(this)"><span class="ql">A</span><span>A traditional software bug — logic error in the code</span></button>
-      <button class="qopt" data-a="1" onclick="aq1(this)"><span class="ql">B</span><span>Could be data issues, model limitations, or expectation mismatch</span></button>
-      <button class="qopt" data-a="0" onclick="aq1(this)"><span class="ql">C</span><span>Always a model accuracy problem needing retraining</span></button>
+<!-- ===== SECTION 4: Build vs Buy ===== -->
+<section class="tutorial-section" id="section-4" data-title="Build vs Buy">
+  <div class="max-w-3xl mx-auto">
+    <div style="margin-bottom: 8px;">
+      <span class="tag" style="background: var(--warm-dim); color: var(--warm); font-size: 11px;">04 / 06</span>
     </div>
-    <div id="q1f" style="margin-top:16px;font-size:13px;display:none;line-height:1.7"></div>
-  </div>
+    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">Build vs Buy Decision Framework</h2>
+    <p style="color: var(--fg-muted); margin-bottom: 32px; font-size: 16px; line-height: 1.6;">
+      One of the highest-leverage decisions an AI PM makes. Walk through this decision tree for a real scenario.
+    </p>
 
-  <div data-reveal style="display:flex;justify-content:flex-end;margin-top:40px">
-    <button class="btn-gold" onclick="go(2)">AI Product Lifecycle <i class="fa-solid fa-arrow-right" style="margin-left:10px;font-size:11px"></i></button>
-  </div>
-</div>
-</section>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--warm-dim);display:flex;align-items:center;justify-content:center;color:var(--warm);font-size:16px;">
+          <i class="fa-solid fa-building"></i>
+        </div>
+        <div>
+          <p style="font-weight:600;font-family:'Space Grotesk';">Scenario: Internal Knowledge Assistant</p>
+          <p style="font-size:13px;color:var(--fg-muted);">Your company (500 employees) needs a chatbot that answers questions about internal policies, benefits, and processes using HR documents.</p>
+        </div>
+      </div>
 
-<!-- S2: Lifecycle -->
-<section class="sec" id="s2">
-<div class="max-w-2xl mx-auto">
-  <div data-reveal><span class="tag" style="background:var(--gold-d);color:var(--gold);font-size:10px">02 — 06</span></div>
-  <h2 data-reveal style="font-size:clamp(28px,4vw,38px);font-weight:700;margin:16px 0 8px;letter-spacing:-.02em">The AI Product Lifecycle</h2>
-  <p data-reveal style="color:var(--fg2);margin-bottom:36px;font-size:15px;line-height:1.7;font-weight:300">AI products have a data loop. Tap each phase to see the PM's role.</p>
-  <div data-reveal class="grid gap-6 resp-col" style="grid-template-columns:200px 1fr">
-    <div id="lcSteps" style="display:flex;flex-direction:column;gap:2px"></div>
-    <div id="lcDetail" class="glass" style="padding:28px;min-height:300px"></div>
-  </div>
-  <div data-reveal style="display:flex;justify-content:space-between;margin-top:40px">
-    <button class="btn-ghost" onclick="go(1)"><i class="fa-solid fa-arrow-left" style="margin-right:8px;font-size:11px"></i>Back</button>
-    <button class="btn-gold" onclick="go(3)">Key Concepts <i class="fa-solid fa-arrow-right" style="margin-left:10px;font-size:11px"></i></button>
-  </div>
-</div>
-</section>
+      <div id="decisionTree">
+        <!-- Step 1 -->
+        <div id="dt-step-0">
+          <p style="font-weight:600;margin-bottom:12px;font-size:15px;">
+            <span style="color:var(--warm);">Q1:</span> Is this AI capability a core competitive differentiator for your business?
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="decision-node" onclick="decisionChoice(0, 'no')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="node-icon" style="background:var(--danger-dim);color:var(--danger);">
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+                <div>
+                  <p style="font-weight:600;font-size:14px;">No</p>
+                  <p style="font-size:12px;color:var(--fg-muted);">It's a support tool, not our product</p>
+                </div>
+              </div>
+            </div>
+            <div class="decision-node" onclick="decisionChoice(0, 'yes')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="node-icon" style="background:var(--success-dim);color:var(--success);">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                  <p style="font-weight:600;font-size:14px;">Yes</p>
+                  <p style="font-size:12px;color:var(--fg-muted);">Core to what we sell</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<!-- S3: Key Concepts -->
-<section class="sec" id="s3">
-<div class="max-w-2xl mx-auto">
-  <div data-reveal><span class="tag" style="background:var(--gold-d);color:var(--gold);font-size:10px">03 — 06</span></div>
-  <h2 data-reveal style="font-size:clamp(28px,4vw,38px);font-weight:700;margin:16px 0 8px;letter-spacing:-.02em">Key Concepts Every AI PM Must Know</h2>
-  <p data-reveal style="color:var(--fg2);margin-bottom:32px;font-size:15px;line-height:1.7;font-weight:300">Tap each card to flip it.</p>
-  <div data-reveal id="ccGrid" class="grid gap-3 resp-col" style="grid-template-columns:1fr 1fr;margin-bottom:36px"></div>
+        <!-- Step 2 (hidden initially) -->
+        <div id="dt-step-1" style="display:none;">
+          <p style="font-weight:600;margin-bottom:12px;font-size:15px;">
+            <span style="color:var(--warm);">Q2:</span> Does an existing solution (API, SaaS) handle 80%+ of your requirements?
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="decision-node" onclick="decisionChoice(1, 'yes')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="node-icon" style="background:var(--success-dim);color:var(--success);">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                  <p style="font-weight:600;font-size:14px;">Yes</p>
+                  <p style="font-size:12px;color:var(--fg-muted);">Off-the-shelf works well enough</p>
+                </div>
+              </div>
+            </div>
+            <div class="decision-node" onclick="decisionChoice(1, 'no')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="node-icon" style="background:var(--danger-dim);color:var(--danger);">
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+                <div>
+                  <p style="font-weight:600;font-size:14px;">No</p>
+                  <p style="font-size:12px;color:var(--fg-muted);">We need custom behavior</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <div data-reveal class="glass" style="padding:28px">
-    <p style="font-weight:600;font-size:14px;margin-bottom:4px">Exercise: Categorize These Tasks</p>
-    <p style="color:var(--fg2);font-size:13px;margin-bottom:18px;font-weight:300">Drag each item to PM or Data Scientist.</p>
-    <div class="grid gap-4 resp-col" style="grid-template-columns:1fr 1fr 1fr">
-      <div><p style="font-size:10px;color:var(--fg3);margin-bottom:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase">Tasks</p><div id="dSrc" style="display:flex;flex-direction:column;gap:8px"></div></div>
-      <div><p style="font-size:10px;color:var(--gold);margin-bottom:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase"><i class="fa-solid fa-user-tie" style="margin-right:4px"></i>PM</p><div class="dzone" id="dzPM" data-z="pm"></div></div>
-      <div><p style="font-size:10px;color:var(--blue);margin-bottom:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase"><i class="fa-solid fa-flask" style="margin-right:4px"></i>Data Scientist</p><div class="dzone" id="dzDS" data-z="ds"></div></div>
-    </div>
-    <div id="dFb" style="margin-top:16px;font-size:13px;display:none;line-height:1.7"></div>
-  </div>
-  <div data-reveal style="display:flex;justify-content:space-between;margin-top:40px">
-    <button class="btn-ghost" onclick="go(2)"><i class="fa-solid fa-arrow-left" style="margin-right:8px;font-size:11px"></i>Back</button>
-    <button class="btn-gold" onclick="go(4)">Build vs Buy <i class="fa-solid fa-arrow-right" style="margin-left:10px;font-size:11px"></i></button>
-  </div>
-</div>
-</section>
+        <!-- Step 3 (hidden initially) -->
+        <div id="dt-step-2" style="display:none;">
+          <p style="font-weight:600;margin-bottom:12px;font-size:15px;">
+            <span style="color:var(--warm);">Q3:</span> Does your team have ML engineering talent and data infrastructure?
+          </p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div class="decision-node" onclick="decisionChoice(2, 'yes')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="node-icon" style="background:var(--success-dim);color:var(--success);">
+                  <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                  <p style="font-weight:600;font-size:14px;">Yes</p>
+                  <p style="font-size:12px;color:var(--fg-muted);">We have the team & infra</p>
+                </div>
+              </div>
+            </div>
+            <div class="decision-node" onclick="decisionChoice(2, 'no')">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <div class="node-icon" style="background:var(--danger-dim);color:var(--danger);">
+                  <i class="fa-solid fa-xmark"></i>
+                </div>
+                <div>
+                  <p style="font-weight:600;font-size:14px;">No</p>
+                  <p style="font-size:12px;color:var(--fg-muted);">We lack capacity or skills</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<!-- S4: Build vs Buy -->
-<section class="sec" id="s4">
-<div class="max-w-2xl mx-auto">
-  <div data-reveal><span class="tag" style="background:var(--gold-d);color:var(--gold);font-size:10px">04 — 06</span></div>
-  <h2 data-reveal style="font-size:clamp(28px,4vw,38px);font-weight:700;margin:16px 0 8px;letter-spacing:-.02em">Build vs Buy</h2>
-  <p data-reveal style="color:var(--fg2);margin-bottom:36px;font-size:15px;line-height:1.7;font-weight:300">One of the highest-leverage decisions. Walk this decision tree.</p>
-
-  <div data-reveal class="glass" style="padding:28px;margin-bottom:24px">
-    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)">
-      <div style="width:36px;height:36px;border-radius:10px;background:var(--gold-d);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0"><i class="fa-solid fa-building" style="font-size:14px"></i></div>
-      <div>
-        <p style="font-weight:600;font-size:14px;margin-bottom:2px">Internal Knowledge Assistant</p>
-        <p style="font-size:12px;color:var(--fg2);font-weight:300;line-height:1.6">500-person company needs a chatbot answering questions about internal policies, benefits, and processes using HR documents.</p>
+        <!-- Result -->
+        <div id="dt-result" style="display:none;margin-top:20px;padding:20px;border-radius:10px;border:1px solid;"></div>
       </div>
     </div>
-    <div id="dtree"></div>
-    <div id="dtRes" style="display:none;margin-top:20px;padding:20px;border-radius:12px;border:1px solid"></div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;">
+      <button class="btn-secondary" onclick="goToSection(3)">
+        <i class="fa-solid fa-arrow-left" style="margin-right:8px;"></i> Back
+      </button>
+      <button class="btn-primary" onclick="goToSection(5)">
+        Metrics & Pitfalls <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>
+      </button>
+    </div>
   </div>
-  <div data-reveal style="display:flex;justify-content:space-between;margin-top:40px">
-    <button class="btn-ghost" onclick="go(3)"><i class="fa-solid fa-arrow-left" style="margin-right:8px;font-size:11px"></i>Back</button>
-    <button class="btn-gold" onclick="go(5)">Metrics & Pitfalls <i class="fa-solid fa-arrow-right" style="margin-left:10px;font-size:11px"></i></button>
-  </div>
-</div>
 </section>
 
-<!-- S5: Metrics & Pitfalls -->
-<section class="sec" id="s5">
-<div class="max-w-2xl mx-auto">
-  <div data-reveal><span class="tag" style="background:var(--gold-d);color:var(--gold);font-size:10px">05 — 06</span></div>
-  <h2 data-reveal style="font-size:clamp(28px,4vw,38px);font-weight:700;margin:16px 0 8px;letter-spacing:-.02em">Metrics That Matter</h2>
-  <p data-reveal style="color:var(--fg2);margin-bottom:36px;font-size:15px;line-height:1.7;font-weight:300">Model accuracy means nothing if users don't trust the output.</p>
-
-  <div data-reveal class="glass" style="padding:28px;margin-bottom:24px">
-    <p style="font-weight:600;font-size:14px;margin-bottom:4px">Match the Metric to the Goal</p>
-    <p style="color:var(--fg2);font-size:13px;margin-bottom:20px;font-weight:300">Select the right metric for each product goal.</p>
-    <div id="mqWrap" style="display:flex;flex-direction:column;gap:24px"></div>
-  </div>
-
-  <div data-reveal class="glass" style="padding:28px">
-    <p style="font-weight:600;font-size:14px;margin-bottom:4px">Spot the Pitfall</p>
-    <p style="color:var(--fg2);font-size:13px;margin-bottom:18px;font-weight:300">Read the scenario and identify the pitfall.</p>
-    <p style="font-size:14px;line-height:1.8;margin-bottom:18px;font-weight:300;color:var(--fg2)">"We trained our recommendation model on 6 months of click data. 94% accuracy on the test set. After launch, engagement dropped 22%. Users said recommendations felt stale — the same popular items regardless of niche interests."</p>
-    <div style="display:flex;flex-direction:column;gap:10px" id="pfO">
-      <button class="qopt" data-a="0" onclick="apf(this)"><span class="ql">A</span><span>Insufficient accuracy — should have aimed for 98%+</span></button>
-      <button class="qopt" data-a="1" onclick="apf(this)"><span class="ql">B</span><span>Fitness gap — optimized for clicks but missed diversity and freshness</span></button>
-      <button class="qopt" data-a="0" onclick="apf(this)"><span class="ql">C</span><span>Over-engineering — should have used rule-based approach</span></button>
-      <button class="qopt" data-a="0" onclick="apf(this)"><span class="ql">D</span><span>Data leakage — test data leaked into training</span></button>
+<!-- ===== SECTION 5: Metrics & Pitfalls ===== -->
+<section class="tutorial-section" id="section-5" data-title="Metrics">
+  <div class="max-w-3xl mx-auto">
+    <div style="margin-bottom: 8px;">
+      <span class="tag" style="background: var(--accent-dim); color: var(--accent); font-size: 11px;">05 / 06</span>
     </div>
-    <div id="pfF" style="margin-top:16px;font-size:13px;display:none;line-height:1.7"></div>
+    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">Metrics That Matter & Common Pitfalls</h2>
+    <p style="color: var(--fg-muted); margin-bottom: 32px; font-size: 16px; line-height: 1.6;">
+      Model accuracy means nothing if users don't trust the output. Learn to measure what actually matters.
+    </p>
+
+    <!-- Metrics matching exercise -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px;">
+      <p style="font-weight:600;margin-bottom:4px;font-family:'Space Grotesk';">Exercise: Match the Metric to the Goal</p>
+      <p style="color:var(--fg-muted);font-size:14px;margin-bottom:20px;">Select the right metric for each product goal.</p>
+
+      <div id="metricsQuiz" style="display:flex;flex-direction:column;gap:20px;">
+        <!-- Filled by JS -->
+      </div>
+    </div>
+
+    <!-- Pitfalls scenario -->
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;">
+      <p style="font-weight:600;margin-bottom:4px;font-family:'Space Grotesk';">Scenario: Spot the Pitfall</p>
+      <p style="color:var(--fg-muted);font-size:14px;margin-bottom:16px;">Read the scenario and identify which AI PM pitfall is being described.</p>
+
+      <div class="scenario-card" id="pitfallScenario">
+        <p style="font-size:15px;line-height:1.7;margin-bottom:16px;">
+          "We trained our recommendation model on 6 months of historical click data. It achieved 94% accuracy on our test set. But after launch, engagement dropped 22%. Users said the recommendations felt stale and repetitive — they kept seeing the same popular items regardless of their niche interests."
+        </p>
+        <div style="display:flex;flex-direction:column;gap:10px;" id="pitfallOptions">
+          <button class="quiz-option" data-answer="wrong" onclick="answerPitfall(this)">
+            <span class="option-letter">A</span>
+            <span>Insufficient model accuracy — should have aimed for 98%+</span>
+          </button>
+          <button class="quiz-option" data-answer="correct" onclick="answerPitfall(this)">
+            <span class="option-letter">B</span>
+            <span>Fitness gap — the model optimized for clicks but missed user diversity and freshness needs</span>
+          </button>
+          <button class="quiz-option" data-answer="wrong" onclick="answerPitfall(this)">
+            <span class="option-letter">C</span>
+            <span>Over-engineering — should have used a simpler rule-based approach</span>
+          </button>
+          <button class="quiz-option" data-answer="wrong" onclick="answerPitfall(this)">
+            <span class="option-letter">D</span>
+            <span>Data leakage — test data leaked into training</span>
+          </button>
+        </div>
+        <div id="pitfallFeedback" style="margin-top:14px;font-size:14px;display:none;"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;margin-top:32px;">
+      <button class="btn-secondary" onclick="goToSection(4)">
+        <i class="fa-solid fa-arrow-left" style="margin-right:8px;"></i> Back
+      </button>
+      <button class="btn-primary" onclick="goToSection(6)">
+        Final Challenge <i class="fa-solid fa-arrow-right" style="margin-left:8px;"></i>
+      </button>
+    </div>
   </div>
-  <div data-reveal style="display:flex;justify-content:space-between;margin-top:40px">
-    <button class="btn-ghost" onclick="go(4)"><i class="fa-solid fa-arrow-left" style="margin-right:8px;font-size:11px"></i>Back</button>
-    <button class="btn-gold" onclick="go(6)">Final Challenge <i class="fa-solid fa-arrow-right" style="margin-left:10px;font-size:11px"></i></button>
-  </div>
-</div>
 </section>
 
-<!-- S6: Final -->
-<section class="sec" id="s6">
-<div class="max-w-2xl mx-auto">
-  <div data-reveal><span class="tag" style="background:var(--gold-d);color:var(--gold);font-size:10px">06 — 06</span></div>
-  <h2 data-reveal style="font-size:clamp(28px,4vw,38px);font-weight:700;margin:16px 0 8px;letter-spacing:-.02em">Final Challenge</h2>
-  <p data-reveal style="color:var(--fg2);margin-bottom:36px;font-size:15px;line-height:1.7;font-weight:300">Write a mini AI product brief, then compare your thinking.</p>
+<!-- ===== SECTION 6: Final Challenge — Mini Product Brief ===== -->
+<section class="tutorial-section" id="section-6" data-title="Challenge">
+  <div class="max-w-3xl mx-auto">
+    <div style="margin-bottom: 8px;">
+      <span class="tag" style="background: var(--warm-dim); color: var(--warm); font-size: 11px;">06 / 06</span>
+    </div>
+    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">Final Challenge: Mini AI Product Brief</h2>
+    <p style="color: var(--fg-muted); margin-bottom: 32px; font-size: 16px; line-height: 1.6;">
+      Apply everything you've learned. Fill out a structured brief for an AI feature — then compare your thinking to a framework answer.
+    </p>
 
-  <div data-reveal class="glass" style="padding:28px;margin-bottom:28px">
-    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border)">
-      <div style="width:36px;height:36px;border-radius:10px;background:var(--gold-d);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0"><i class="fa-solid fa-lightbulb" style="font-size:14px"></i></div>
-      <div>
-        <p style="font-weight:600;font-size:14px;margin-bottom:2px">Your Challenge</p>
-        <p style="font-size:12px;color:var(--fg2);font-weight:300;line-height:1.6">Design an AI feature for a meal planning app: weekly plans based on dietary restrictions, budget, and available ingredients.</p>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:16px;">
+          <i class="fa-solid fa-lightbulb"></i>
+        </div>
+        <div>
+          <p style="font-weight:600;font-family:'Space Grotesk';">Your Challenge</p>
+          <p style="font-size:13px;color:var(--fg-muted);">Design an AI feature for a meal planning app that helps users generate weekly meal plans based on dietary restrictions, budget, and available ingredients.</p>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--fg-muted);display:block;margin-bottom:6px;">
+            1. What type of AI approach would you use and why?
+          </label>
+          <textarea class="input-field" id="brief1" placeholder="e.g., LLM with structured output + retrieval from recipe database..."></textarea>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--fg-muted);display:block;margin-bottom:6px;">
+            2. What's the #1 risk and how would you mitigate it?
+          </label>
+          <textarea class="input-field" id="brief2" placeholder="e.g., Hallucinated recipes with incorrect ingredients — mitigate with grounding in verified recipe data..."></textarea>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--fg-muted);display:block;margin-bottom:6px;">
+            3. Name 2 metrics you'd track (beyond model accuracy)
+          </label>
+          <textarea class="input-field" id="brief3" placeholder="e.g., Plan completion rate, ingredient substitution acceptance rate..."></textarea>
+        </div>
+        <div>
+          <label style="font-size:13px;font-weight:600;color:var(--fg-muted);display:block;margin-bottom:6px;">
+            4. How would you handle a case where the AI can't generate a good plan?
+          </label>
+          <textarea class="input-field" id="brief4" placeholder="e.g., Graceful degradation — offer partial plan + suggest relaxing one constraint..."></textarea>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;margin-top:24px;">
+        <button class="btn-primary" onclick="showFrameworkAnswer()">
+          <i class="fa-solid fa-eye" style="margin-right:8px;"></i> Reveal Framework Answer
+        </button>
+        <button class="btn-secondary" onclick="clearBrief()">Clear</button>
+      </div>
+
+      <div id="frameworkAnswer" style="display:none;margin-top:24px;padding:20px;background:var(--bg-elevated);border:1px solid var(--border);border-radius:10px;">
+        <!-- Filled by JS -->
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:20px">
-      <div><label style="font-size:12px;font-weight:600;color:var(--fg2);display:block;margin-bottom:6px;letter-spacing:.02em">1. What AI approach and why?</label><textarea class="ifield" id="b1" placeholder="e.g., LLM with structured output + RAG over recipe database..."></textarea></div>
-      <div><label style="font-size:12px;font-weight:600;color:var(--fg2);display:block;margin-bottom:6px;letter-spacing:.02em">2. #1 risk and mitigation?</label><textarea class="ifield" id="b2" placeholder="e.g., Hallucinated recipes — mitigate with grounding in verified data..."></textarea></div>
-      <div><label style="font-size:12px;font-weight:600;color:var(--fg2);display:block;margin-bottom:6px;letter-spacing:.02em">3. Two metrics beyond accuracy?</label><textarea class="ifield" id="b3" placeholder="e.g., Plan acceptance rate, ingredient substitution acceptance..."></textarea></div>
-      <div><label style="font-size:12px;font-weight:600;color:var(--fg2);display:block;margin-bottom:6px;letter-spacing:.02em">4. How to handle failure cases?</label><textarea class="ifield" id="b4" placeholder="e.g., Graceful degradation — partial plan + relax one constraint..."></textarea></div>
-    </div>
-    <div style="display:flex;gap:12px;margin-top:24px">
-      <button class="btn-gold" onclick="showFA()"><i class="fa-solid fa-eye" style="margin-right:8px;font-size:12px"></i>Reveal Framework</button>
-      <button class="btn-ghost" onclick="document.querySelectorAll('.ifield').forEach(function(e){e.value=''});document.getElementById('fa').style.display='none'">Clear</button>
-    </div>
-    <div id="fa" style="display:none;margin-top:24px;padding:22px;background:rgba(255,248,235,.015);border:1px solid var(--border);border-radius:12px">
-      <p style="font-weight:600;color:var(--gold);margin-bottom:14px;font-size:13px;letter-spacing:.02em">Framework Answer</p>
-      <div style="display:flex;flex-direction:column;gap:16px;font-size:13px;color:var(--fg2);line-height:1.75;font-weight:300">
-        <div><p style="font-weight:600;color:var(--fg);margin-bottom:4px">AI Approach</p><p>An LLM with structured JSON output + RAG over a verified recipe database. Use the LLM for constraint reasoning (dietary, budget, ingredient matching) and the DB as ground truth. Balances flexibility with reliability.</p></div>
-        <div><p style="font-weight:600;color:var(--fg);margin-bottom:4px">Top Risk</p><p><strong style="color:var(--fg)">Hallucinated recipes</strong> — incorrect ingredients or cooking times (safety risk). Mitigate: ground all recipes in the DB, add a validation layer, show "verified" badges, let users flag issues.</p></div>
-        <div><p style="font-weight:600;color:var(--fg);margin-bottom:4px">Two Metrics</p><p><strong style="color:var(--fg)">Plan Acceptance Rate</strong> — % of plans accepted without major edits. <strong style="color:var(--fg)">Shopping List Completion Rate</strong> — % of ingredients users actually add to their cart. Both measure end-to-end value.</p></div>
-        <div><p style="font-weight:600;color:var(--fg);margin-bottom:4px">Failure Handling</p><p>Graceful degradation: (1) If constraints conflict, satisfy the most important and explicitly note what was relaxed. (2) Offer single-meal swaps instead of full regeneration. (3) Fall back to curated templates for common diets. Never show an error — always offer something useful.</p></div>
-      </div>
-    </div>
-  </div>
 
-  <div data-reveal class="glass" style="padding:36px;text-align:center;border-color:rgba(200,162,84,.15)">
-    <div style="width:56px;height:56px;border-radius:50%;background:var(--gold-d);display:flex;align-items:center;justify-content:center;margin:0 auto 18px"><i class="fa-solid fa-trophy" style="font-size:20px;color:var(--gold)"></i></div>
-    <h3 style="font-size:22px;font-weight:700;margin-bottom:6px">Tutorial Complete</h3>
-    <p style="color:var(--fg3);font-size:13px;margin-bottom:20px;font-weight:300">Your score across all exercises</p>
-    <p id="fScore" style="font-size:52px;font-weight:900;color:var(--gold);font-family:'Fraunces',serif;margin-bottom:4px;line-height:1">0/0</p>
-    <p id="fMsg" style="color:var(--fg3);font-size:13px;margin-bottom:28px;font-weight:300;min-height:20px"></p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      <button class="btn-ghost" onclick="go(0)"><i class="fa-solid fa-rotate-left" style="margin-right:6px;font-size:11px"></i>Restart</button>
-      <button class="btn-gold" onclick="toast('Saved — come back anytime.','fa-solid fa-bookmark','var(--gold)')"><i class="fa-solid fa-bookmark" style="margin-right:6px;font-size:11px"></i>Bookmark</button>
+    <!-- Score summary -->
+    <div id="scoreSummary" style="background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:28px;text-align:center;">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--accent-dim);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:var(--accent);">
+        <i class="fa-solid fa-trophy"></i>
+      </div>
+      <h3 style="font-size:22px;font-weight:700;margin-bottom:8px;">Tutorial Complete</h3>
+      <p style="color:var(--fg-muted);margin-bottom:16px;">Your score across all exercises:</p>
+      <div style="font-size:48px;font-weight:700;color:var(--accent);font-family:'Space Grotesk';margin-bottom:4px;" id="finalScore">0/0</div>
+      <p style="color:var(--fg-dim);font-size:14px;margin-bottom:20px;" id="scoreMessage"></p>
+      <button class="btn-secondary" onclick="goToSection(0)" style="margin-right:8px;">
+        <i class="fa-solid fa-rotate-left" style="margin-right:6px;"></i> Restart
+      </button>
+      <button class="btn-primary" onclick="showToast('Bookmarked! Come back anytime.','fa-solid fa-bookmark', 'var(--accent)')">
+        <i class="fa-solid fa-bookmark" style="margin-right:6px;"></i> Bookmark
+      </button>
     </div>
   </div>
-</div>
 </section>
 
 <script>
-var cur=0,sc=0,mx=0,busy=false,q1d=false,pfd=false,mqA={},dPlaced=0,dCorrect=0,dPath=[];
+// ===== State =====
+let currentSection = 0;
+const totalSections = 7;
+let score = 0;
+let maxScore = 0;
+let quiz1Answered = false;
+let pitfallAnswered = false;
+let metricsAnswered = {};
+let dragPlaced = 0;
+let dragCorrect = 0;
+let decisionPath = [];
 
-var LC=[
-  {t:'Problem & Data Scoping',icon:'fa-crosshairs',c:'var(--gold)',items:['Define the problem precisely — "reduce churn" is too vague','Identify if ML is the right tool (sometimes rules win)','Assess data: do we have it? Can we get it? Is it labeled?','Define success criteria BEFORE building','Decide: supervised, unsupervised, or LLM-based?'],trap:'Starting with "we need AI" instead of "we need to solve X"'},
-  {t:'Data Acquisition & Prep',icon:'fa-database',c:'var(--blue)',items:['Work with data engineers on requirements','Ensure privacy compliance (GDPR, CCPA)','Evaluate quality: bias, coverage, freshness, labeling','Create data splits (train/val/test) with temporal awareness','Budget time: data prep is 60-80% of the work'],trap:'Underestimating data cleanup time by 3-5x'},
-  {t:'Model Development',icon:'fa-gears',c:'var(--gold)',items:['Define "good enough" baseline (often simpler than you think)','Set the accuracy/latency/cost tradeoff boundary','Run fair bake-offs across approaches','Ensure metrics align with business goals, not just ML metrics','Decide when to stop iterating (diminishing returns)'],trap:'Chasing the last 2% accuracy while ignoring UX'},
-  {t:'Integration & UX',icon:'fa-palette',c:'var(--blue)',items:['Design for uncertainty: loading states, confidence, fallbacks','Decide output presentation: ranked list? text? visual?','Build trust: explainability, citations, confidence scores','Design the human-in-the-loop interaction','Plan graceful degradation when the model is wrong'],trap:'Making AI feel omniscient — then users lose trust at first failure'},
-  {t:'Evaluation & Launch',icon:'fa-rocket',c:'var(--gold)',items:['A/B test vs. baseline, not just "launch and see"','Monitor for edge cases and demographic gaps','Prepare rollback plan for production surprises','Set up observability: inputs, outputs, confidence, latency','Educate support on the feature\'s limitations'],trap:'Launching to 100% without shadow mode or canary testing'},
-  {t:'Monitoring & Feedback',icon:'fa-arrows-rotate',c:'var(--blue)',items:['Track data drift: is production shifting from training?','Monitor performance degradation over time','Collect user feedback signals (thumbs, edits, ignores)','Prioritize retraining triggers and frequency','Close the loop: feedback to labels to retrain to evaluate'],trap:'"Deploy and forget" — models decay, data shifts, needs evolve'}
-];
-
-var CC=[
-  {term:'Training Data',icon:'fa-table',brief:'Dataset used to teach the model',detail:'As a PM, you care about: representativeness (matches real users?), labeling quality (consistent annotations?), and coverage (edge cases included?). Garbage in, garbage out is the #1 reason AI projects fail.',c:'var(--gold)'},
-  {term:'Inference',icon:'fa-bolt',brief:'When a trained model predicts on new data',detail:'PM concerns: latency (how fast?), cost per inference (pennies matter at scale), throughput (handle peak load?). A great model that\'s too slow or expensive is a bad product.',c:'var(--blue)'},
-  {term:'Grounding',icon:'fa-link',brief:'Anchoring AI outputs to verified sources',detail:'Critical for LLM products. Without grounding, models hallucinate. PMs must design RAG pipelines, show source citations, and set expectations about what the AI "knows" vs. "guesses."',c:'var(--gold)'},
-  {term:'Fitness Gap',icon:'fa-arrows-left-right',brief:'Gap between model performance and user needs',detail:'99% accuracy can still fail as a product. A spam filter with 1% false positive rate hides 1 in 100 important emails. The fitness gap is the distance between ML metrics and actual user experience.',c:'var(--blue)'},
-  {term:'Cold Start',icon:'fa-snowflake',brief:'Insufficient data for good predictions',detail:'New users, items, markets. PM solutions: use demographic defaults, ask explicit preferences at onboarding, start with rules and layer in ML as data accumulates.',c:'var(--gold)'},
-  {term:'Data Drift',icon:'fa-water',brief:'Real-world data shifting from training data',detail:'COVID broke every forecasting model overnight. PMs must monitor for drift, set up automated alerts, and plan retraining cadences. Summer training data does not equal winter behavior.',c:'var(--blue)'}
-];
-
-var DI=[
-  {id:'d1',text:'Write the PRD with success metrics',z:'pm'},
-  {id:'d2',text:'Choose the model architecture',z:'ds'},
-  {id:'d3',text:'Define user persona and use case',z:'pm'},
-  {id:'d4',text:'Tune hyperparameters',z:'ds'},
-  {id:'d5',text:'Design fallback UX for low confidence',z:'pm'},
-  {id:'d6',text:'Build data pipeline for features',z:'ds'},
-  {id:'d7',text:'Run A/B test, analyze business impact',z:'pm'},
-  {id:'d8',text:'Evaluate model bias across groups',z:'ds'}
-];
-
-var MQ=[
-  {goal:'AI email assistant that drafts replies',opts:['F1 Score','Edit Rate (how much user changes draft)','BLEU Score','Training Loss'],correct:1,why:'Edit Rate directly measures usefulness. F1 and BLEU are ML metrics that don\'t capture user satisfaction.'},
-  {goal:'Fraud detection for payments',opts:['Precision','Recall','False Positive Rate','All matter — but for different reasons'],correct:3,why:'High recall catches fraud but increases false positives (declining legitimate transactions). The PM must set the business-appropriate threshold balancing all three.'},
-  {goal:'AI image generation in a design tool',opts:['Inception Score','User adoption rate of generated images','FID','Parameter count'],correct:1,why:'Inception Score and FID are research metrics. Whether designers actually use the images in their work — adoption rate — is the real product signal.'}
-];
-
-var DTQ=[
-  {q:'Is this AI capability a core competitive differentiator?',yes:'Core to what we sell',no:'Support tool, not our product'},
-  {q:'Does an existing solution cover 80%+ of requirements?',yes:'Off-the-shelf works well enough',no:'We need custom behavior'},
-  {q:'Does your team have ML talent and data infrastructure?',yes:'We have the team and infra',no:'We lack capacity or skills'}
-];
-
-function init(){
-  var nd=document.getElementById('nd');
-  for(var i=0;i<7;i++){var d=document.createElement('button');d.className='nav-dot'+(i===0?' active':'');d.setAttribute('aria-label','Section '+(i+1));d.onclick=(function(idx){return function(){go(idx)}})(i);nd.appendChild(d)}
-
-  var ls=document.getElementById('lcSteps');
-  for(var j=0;j<LC.length;j++){(function(idx){
-    var s=document.createElement('div');s.className='lc-step'+(idx===0?' on':'');
-    s.onclick=function(){showLC(idx)};
-    s.innerHTML='<span style="font-family:Fraunces,serif;font-weight:700;font-size:11px;color:var(--fg3);transition:color .3s">'+String(idx+1).padStart(2,'0')+'</span><p style="font-weight:500;font-size:13px;margin-top:2px;color:var(--fg2);transition:color .3s">'+LC[idx].t+'</p>';
-    ls.appendChild(s);
-  })(j)}
-  showLC(0);
-
-  var cg=document.getElementById('ccGrid');
-  for(var k=0;k<CC.length;k++){var c=CC[k];
-    cg.innerHTML+='<div class="fcard" onclick="this.classList.toggle(\'flipped\')"><div class="fcard-inner" style="min-height:160px"><div class="fcard-face fcard-front glass" style="padding:20px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><i class="fa-solid '+c.icon+'" style="color:'+c.c+';font-size:12px"></i><span style="font-weight:600;font-size:13px">'+c.term+'</span></div><p style="color:var(--fg3);font-size:12px;font-weight:300">'+c.brief+'</p><p style="color:var(--fg3);font-size:10px;margin-top:10px;opacity:.6"><i class="fa-solid fa-rotate" style="margin-right:3px"></i>Tap to flip</p></div><div class="fcard-face fcard-back glass" style="padding:20px;border-color:'+c.c+'"><p style="font-weight:600;font-size:13px;color:'+c.c+';margin-bottom:8px">'+c.term+'</p><p style="font-size:12px;color:var(--fg2);line-height:1.7;font-weight:300">'+c.detail+'</p></div></div></div>';
+// ===== Lifecycle data =====
+const lifecycleData = [
+  {
+    title: 'Problem & Data Scoping',
+    icon: 'fa-solid fa-crosshairs',
+    color: 'var(--accent)',
+    pmTasks: [
+      'Define the problem precisely — "reduce customer churn" is too vague',
+      'Identify if ML is even the right tool (sometimes rules win)',
+      'Assess data availability: do we have it? Can we get it? Is it labeled?',
+      'Define success criteria BEFORE building anything',
+      'Decide: supervised, unsupervised, or LLM-based approach?'
+    ],
+    trap: 'Trap: Starting with "we need AI" instead of "we need to solve X"'
+  },
+  {
+    title: 'Data Acquisition & Preparation',
+    icon: 'fa-solid fa-database',
+    color: 'var(--warm)',
+    pmTasks: [
+      'Work with data engineers to define data requirements',
+      'Ensure data privacy compliance (GDPR, CCPA)',
+      'Evaluate data quality: bias, coverage, freshness, labeling accuracy',
+      'Create data split strategy (train/val/test) with temporal awareness',
+      'Budget time: data prep is 60-80% of the work'
+    ],
+    trap: 'Trap: Underestimating data cleanup time by 3-5x'
+  },
+  {
+    title: 'Model Development',
+    icon: 'fa-solid fa-gears',
+    color: 'var(--accent)',
+    pmTasks: [
+      'Define the "good enough" baseline (often simpler than you think)',
+      'Set the accuracy/latency/cost tradeoff boundary',
+      'Run bake-offs: compare multiple approaches fairly',
+      'Ensure evaluation metrics align with business goals, not just ML metrics',
+      'Decide when to stop iterating (diminishing returns are real)'
+    ],
+    trap: 'Trap: Chasing the last 2% accuracy while ignoring UX'
+  },
+  {
+    title: 'Integration & UX Design',
+    icon: 'fa-solid fa-palette',
+    color: 'var(--warm)',
+    pmTasks: [
+      'Design for uncertainty: loading states, confidence indicators, fallbacks',
+      'Decide how to present AI output (ranked list? generated text? visual?)',
+      'Build trust signals: explainability, source citations, confidence scores',
+      'Design the human-in-the-loop interaction pattern',
+      'Plan for graceful degradation when the model is wrong'
+    ],
+    trap: 'Trap: Making the AI feel omniscient — then users lose trust the first time it fails'
+  },
+  {
+    title: 'Evaluation & Launch',
+    icon: 'fa-solid fa-rocket',
+    color: 'var(--accent)',
+    pmTasks: [
+      'Run A/B tests comparing AI feature vs. baseline (not just "launch and see")',
+      'Monitor for edge cases and demographic performance gaps',
+      'Prepare rollback plan — what if the model behaves differently in production?',
+      'Set up observability: logging inputs, outputs, confidence, latency',
+      'Educate customer support on the AI feature\'s limitations'
+    ],
+    trap: 'Trap: Launching to 100% without shadow mode or canary testing'
+  },
+  {
+    title: 'Monitoring & Feedback Loop',
+    icon: 'fa-solid fa-arrows-rotate',
+    color: 'var(--warm)',
+    pmTasks: [
+      'Track data drift: is production data shifting from training data?',
+      'Monitor model performance degradation over time',
+      'Collect user feedback signals (thumbs up/down, edits, ignores)',
+      'Prioritize retraining triggers and frequency',
+      'Close the loop: feedback → labeled data → retrain → re-evaluate'
+    ],
+    trap: 'Trap: "Deploy and forget" — models decay, data shifts, user needs evolve'
   }
+];
 
-  var ds=document.getElementById('dSrc');
-  var shuffled=DI.slice().sort(function(){return Math.random()-.5});
-  for(var m=0;m<shuffled.length;m++){var it=shuffled[m];var dd=document.createElement('div');dd.className='ditem';dd.draggable=true;dd.dataset.id=it.id;dd.dataset.z=it.z;dd.textContent=it.text;dd.ondragstart=dds;dd.ondragend=dde;ds.appendChild(dd)}
+// ===== Concept cards data =====
+const concepts = [
+  {
+    term: 'Training Data',
+    icon: 'fa-solid fa-table',
+    brief: 'The dataset used to teach the model patterns',
+    detail: 'As a PM, you care about: representativeness (does it match real users?), labeling quality (are annotations consistent?), and coverage (are edge cases included?). Garbage in, garbage out is not a cliché — it\'s the #1 reason AI projects fail.',
+    color: 'var(--accent)'
+  },
+  {
+    term: 'Inference',
+    icon: 'fa-solid fa-bolt',
+    brief: 'When a trained model makes predictions on new data',
+    detail: 'PM concerns: latency (how fast does the user get an answer?), cost per inference (at scale, pennies matter), and throughput (can we handle peak load?). A great model that\'s too slow or expensive is a bad product.',
+    color: 'var(--warm)'
+  },
+  {
+    term: 'Grounding',
+    icon: 'fa-solid fa-link',
+    brief: 'Anchoring AI outputs to verified, real-world sources',
+    detail: 'Critical for LLM products. Without grounding, models hallucinate confidently. PMs must design retrieval-augmented generation (RAG) pipelines, show source citations in the UI, and set clear expectations about what the AI "knows" vs. "guesses."',
+    color: 'var(--accent)'
+  },
+  {
+    term: 'Fitness Gap',
+    icon: 'fa-solid fa-arrows-left-right',
+    brief: 'The gap between model performance and user needs',
+    detail: 'A model can be 99% accurate and still fail as a product. Example: a spam filter with 1% false positive rate means 1 in 100 important emails gets hidden. The "fitness gap" is the distance between your ML metrics and what users actually experience.',
+    color: 'var(--warm)'
+  },
+  {
+    term: 'Cold Start',
+    icon: 'fa-solid fa-snowflake',
+    brief: 'When there\'s insufficient data to make good predictions',
+    detail: 'New users, new items, new markets — all face cold start. PM solutions: use demographic/behavioral defaults, ask users explicit preferences at onboarding, start with rules-based logic and layer in ML as data accumulates.',
+    color: 'var(--accent)'
+  },
+  {
+    term: 'Data Drift',
+    icon: 'fa-solid fa-water',
+    brief: 'When real-world data shifts away from training data',
+    detail: 'COVID was a massive drift event — every forecasting model broke overnight. PMs must monitor for drift, set up automated alerts, and plan retraining cadences. If your model was trained on summer data, expect different behavior in winter.',
+    color: 'var(--warm)'
+  }
+];
 
-  var zones=['dzPM','dzDS'];
-  for(var z=0;z<zones.length;z++){(function(zid){
-    var el=document.getElementById(zid);
-    el.ondragover=function(e){e.preventDefault();el.classList.add('over')};
-    el.ondragleave=function(){el.classList.remove('over')};
-    el.ondrop=function(e){hDrop(e,el)};
-  })(zones[z])}
+// ===== Drag & drop data =====
+const dragItems = [
+  { id: 'd1', text: 'Write the PRD with success metrics', zone: 'pm' },
+  { id: 'd2', text: 'Choose the model architecture', zone: 'ds' },
+  { id: 'd3', text: 'Define the user persona and use case', zone: 'pm' },
+  { id: 'd4', text: 'Tune hyperparameters', zone: 'ds' },
+  { id: 'd5', text: 'Design fallback UX for low-confidence outputs', zone: 'pm' },
+  { id: 'd6', text: 'Build the data pipeline for feature extraction', zone: 'ds' },
+  { id: 'd7', text: 'Run A/B test and analyze business impact', zone: 'pm' },
+  { id: 'd8', text: 'Evaluate model bias across demographic groups', zone: 'ds' },
+];
 
-  var mw=document.getElementById('mqWrap');
-  for(var qi=0;qi<MQ.length;qi++){(function(idx){
-    var q=MQ[idx];
-    var html='<div><p style="font-size:13px;font-weight:500;margin-bottom:12px;color:var(--fg)">"'+q.goal+'"</p><div class="grid gap-2 resp-col" style="grid-template-columns:1fr 1fr" id="mq'+idx+'">';
-    for(var oi=0;oi<q.opts.length;oi++){
-      var isCor=oi===q.correct;
-      html+='<button class="qopt" style="font-size:12px;padding:12px 14px" data-a="'+(isCor?1:0)+'" onclick="amq('+idx+','+oi+',this)"><span class="ql" style="width:24px;height:24px;font-size:10px">'+'ABCD'[oi]+'</span><span>'+q.opts[oi]+'</span></button>';
-    }
-    html+='</div><div id="mqf'+idx+'" style="margin-top:10px;font-size:12px;display:none;line-height:1.7"></div></div>';
-    mw.innerHTML+=html;
-  })(qi)}
+// ===== Metrics quiz data =====
+const metricsQuestions = [
+  {
+    goal: 'An AI email assistant that drafts replies',
+    options: ['F1 Score', 'Edit Rate (how much user changes the draft)', 'BLEU Score', 'Training Loss'],
+    correct: 1,
+    explanation: 'Edit Rate directly measures usefulness: if users rarely change the draft, it\'s valuable. F1 and BLEU are ML metrics that don\'t capture user satisfaction.'
+  },
+  {
+    goal: 'A fraud detection system for payments',
+    options: ['Precision', 'Recall', 'False Positive Rate', 'All of the above matter — but for different reasons'],
+    correct: 3,
+    explanation: 'Fraud detection requires balancing all three. High recall catches more fraud but increases false positives (declining legitimate transactions). The PM must set the business-appropriate threshold.'
+  },
+  {
+    goal: 'An AI image generation feature in a design tool',
+    options: ['Inception Score', 'User adoption rate of generated images', 'FID (Fréchet Inception Distance)', 'Parameter count'],
+    correct: 1,
+    explanation: 'Inception Score and FID are research metrics. What matters for the product is whether designers actually use the generated images in their work — adoption rate is the real signal.'
+  }
+];
 
-  buildDT();
+// ===== Framework answer for Section 6 =====
+const frameworkAnswer = `
+  <p style="font-weight:600;color:var(--accent);margin-bottom:14px;font-family:'Space Grotesk';">Framework Answer</p>
+  <div style="display:flex;flex-direction:column;gap:16px;font-size:14px;color:var(--fg-muted);line-height:1.7;">
+    <div>
+      <p style="font-weight:600;color:var(--fg);margin-bottom:4px;">1. AI Approach</p>
+      <p>An LLM (e.g., GPT-4 class or fine-tuned smaller model) with structured JSON output, combined with RAG over a verified recipe database. Use the LLM for reasoning about constraints (dietary, budget, ingredient matching) and the recipe DB as ground truth. This balances flexibility with reliability.</p>
+    </div>
+    <div>
+      <p style="font-weight:600;color:var(--fg);margin-bottom:4px;">2. Top Risk & Mitigation</p>
+      <p><strong>Hallucinated recipes</strong> — the model could suggest dishes with incorrect ingredients, proportions, or cooking times (safety risk!). Mitigate: (a) ground all recipes in the verified DB, (b) add a validation layer that checks ingredient lists against the DB, (c) show "verified" badges and let users flag issues.</p>
+    </div>
+    <div>
+      <p style="font-weight:600;color:var(--fg);margin-bottom:4px;">3. Two Metrics Beyond Accuracy</p>
+      <p><strong>Plan Acceptance Rate:</strong> % of generated plans the user accepts without major edits. This measures real-world usefulness.</p>
+      <p><strong>Shopping List Completion Rate:</strong> % of ingredients in the plan that the user actually adds to their shopping list. This measures end-to-end value.</p>
+    </div>
+    <div>
+      <p style="font-weight:600;color:var(--fg);margin-bottom:4px;">4. Handling Failure Cases</p>
+      <p>Graceful degradation in tiers: (1) If strict constraints can\'t all be met, generate a plan that satisfies the most important ones and explicitly note what was relaxed. (2) Offer to swap individual meals rather than regenerate the whole plan. (3) Fall back to curated template plans for common diets. Never show an error page — always offer something useful.</p>
+    </div>
+  </div>
+`;
 
-  /* THE FIX: make the first section visible */
-  document.getElementById('s0').classList.add('visible');
-  setTimeout(function(){reveal(document.getElementById('s0'))},80);
+// ===== Init =====
+function init() {
+  createParticles();
+  createNavDots();
+  renderConceptCards();
+  renderDragItems();
+  renderMetricsQuiz();
+  showLifecycle(0);
+  updateProgress();
 }
 
-function go(i){
-  if(i===cur||busy)return;busy=true;
-  var prev=document.getElementById('s'+cur);
-  var next=document.getElementById('s'+i);
-  var dir=i>cur?1:-1;
-  prev.classList.remove('visible');
-  prev.style.transition='opacity .3s ease, transform .3s ease';
-  prev.style.opacity='0';
-  prev.style.transform='translateY('+(-16*dir)+'px)';
-  setTimeout(function(){
+// ===== Particles =====
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = (30 + Math.random() * 60) + '%';
+    p.style.animationDelay = (Math.random() * 8) + 's';
+    p.style.animationDuration = (6 + Math.random() * 6) + 's';
+    container.appendChild(p);
+  }
+}
+
+// ===== Navigation =====
+function createNavDots() {
+  const nav = document.getElementById('navDots');
+  for (let i = 0; i < totalSections; i++) {
+    const dot = document.createElement('button');
+    dot.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Go to section ' + (i + 1));
+    dot.onclick = () => goToSection(i);
+    nav.appendChild(dot);
+  }
+}
+
+function goToSection(index) {
+  if (index === currentSection) return;
+  const prev = document.getElementById('section-' + currentSection);
+  const next = document.getElementById('section-' + index);
+
+  prev.style.animation = 'fadeSlideOut 0.3s ease forwards';
+  setTimeout(() => {
     prev.classList.remove('active');
-    prev.style.cssText='';
+    prev.style.animation = '';
     next.classList.add('active');
-    next.style.opacity='0';
-    next.style.transform='translateY('+(16*dir)+'px)';
-    next.offsetHeight;
-    next.style.transition='opacity .5s cubic-bezier(.22,1,.36,1), transform .5s cubic-bezier(.22,1,.36,1)';
-    next.classList.add('visible');
-    next.style.opacity='1';
-    next.style.transform='translateY(0)';
-    cur=i;
-    document.getElementById('pf').style.width=(cur/6*100)+'%';
-    var dots=document.querySelectorAll('.nav-dot');
-    for(var j=0;j<dots.length;j++)dots[j].classList.toggle('active',j===cur);
-    setTimeout(function(){reveal(next)},120);
-    setTimeout(function(){busy=false},500);
-    window.scrollTo({top:0,behavior:'instant'});
-  },300);
+    currentSection = index;
+    updateProgress();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 250);
 }
 
-function reveal(sec){
-  var els=sec.querySelectorAll('[data-reveal]');
-  for(var i=0;i<els.length;i++){(function(el,delay){
-    setTimeout(function(){el.classList.add('shown')},delay);
-  })(els[i],60+i*70)}
+function updateProgress() {
+  const pct = (currentSection / (totalSections - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === currentSection);
+  });
 }
 
-function toast(msg,icon,color){
-  var t=document.getElementById('toast');
-  t.innerHTML='<i class="'+(icon||'fa-solid fa-circle-info')+'" style="color:'+(color||'var(--gold)')+';font-size:14px"></i><span>'+msg+'</span>';
-  t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show')},2800);
+// ===== Toast =====
+function showToast(message, icon, color) {
+  const toast = document.getElementById('toast');
+  toast.innerHTML = `<i class="${icon || 'fa-solid fa-circle-info'}" style="color:${color || 'var(--accent)'};font-size:16px;"></i> <span>${message}</span>`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
-function floatPts(){
-  var el=document.getElementById('floatPts');
-  el.style.left='50%';el.style.top='50%';el.style.transform='translate(-50%,-50%)';
-  el.classList.remove('go');el.offsetHeight;el.classList.add('go');
-  setTimeout(function(){el.classList.remove('go')},900);
+// ===== Section 1: Quiz =====
+function toggleCompare(card, type) {
+  card.classList.toggle('flipped');
 }
 
-function aq1(btn){
-  if(q1d)return;q1d=true;mx++;
-  var opts=document.querySelectorAll('#q1o .qopt');
-  for(var i=0;i<opts.length;i++){
-    opts[i].classList.add('locked');
-    if(+opts[i].dataset.a)opts[i].classList.add('correct');
-    else if(opts[i]===btn)opts[i].classList.add('wrong');
+function answerQuiz1(btn) {
+  if (quiz1Answered) return;
+  quiz1Answered = true;
+  maxScore++;
+
+  const options = document.querySelectorAll('#quiz1Options .quiz-option');
+  options.forEach(o => {
+    if (o === btn) {
+      o.classList.add(o.dataset.answer === 'correct' ? 'correct' : 'wrong');
+    } else if (o.dataset.answer === 'correct') {
+      o.classList.add('correct');
+    }
+    o.style.pointerEvents = 'none';
+  });
+
+  const feedback = document.getElementById('quiz1Feedback');
+  if (btn.dataset.answer === 'correct') {
+    score++;
+    feedback.innerHTML = '<span style="color:var(--success);"><i class="fa-solid fa-check-circle"></i> Correct!</span> In AI products, "wrong" answers could stem from training data gaps, model limitations, ambiguous user intent, or a mismatch between what was promised and what the model can deliver. Diagnosing the root cause is step one.';
+  } else {
+    feedback.innerHTML = '<span style="color:var(--danger);"><i class="fa-solid fa-times-circle"></i> Not quite.</span> While code bugs exist in AI products too, most "wrong answer" reports are about data quality, model boundaries, or expectation alignment. Always diagnose before fixing.';
   }
-  var f=document.getElementById('q1f');f.style.display='block';
-  if(+btn.dataset.a){
-    sc++;
-    f.innerHTML='<span style="color:var(--green)"><i class="fa-solid fa-check-circle"></i> Correct.</span> In AI, "wrong" answers stem from data gaps, model limitations, ambiguous intent, or expectation mismatch. Diagnose before fixing.';
-    floatPts();toast('+1 point','fa-solid fa-star','var(--gold)');
-  }else{
-    f.innerHTML='<span style="color:var(--red)"><i class="fa-solid fa-times-circle"></i> Not quite.</span> Most "wrong answer" reports are about data quality, model boundaries, or expectation alignment — not code bugs. Always diagnose first.';
+  feedback.style.display = 'block';
+  showToast(btn.dataset.answer === 'correct' ? '+1 point!' : 'Not this time — read the explanation', btn.dataset.answer === 'correct' ? 'fa-solid fa-star' : 'fa-solid fa-circle-info', btn.dataset.answer === 'correct' ? 'var(--accent)' : 'var(--warm)');
+}
+
+// ===== Section 2: Lifecycle =====
+function showLifecycle(index) {
+  const steps = document.querySelectorAll('#lifecycleSteps .lifecycle-step');
+  steps.forEach((s, i) => s.classList.toggle('active', i === index));
+
+  const data = lifecycleData[index];
+  const detail = document.getElementById('lifecycleDetail');
+  detail.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+      <div style="width:36px;height:36px;border-radius:8px;background:${data.color === 'var(--accent)' ? 'var(--accent-dim)' : 'var(--warm-dim)'};display:flex;align-items:center;justify-content:center;color:${data.color};font-size:14px;">
+        <i class="${data.icon}"></i>
+      </div>
+      <h3 style="font-size:18px;font-weight:700;">${data.title}</h3>
+    </div>
+    <p style="font-size:13px;font-weight:600;color:var(--fg-dim);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">PM Responsibilities</p>
+    <ul style="list-style:none;margin-bottom:18px;">
+      ${data.pmTasks.map(t => `<li style="font-size:14px;color:var(--fg-muted);line-height:1.7;padding-left:16px;position:relative;margin-bottom:4px;"><span style="position:absolute;left:0;color:${data.color};font-size:10px;top:5px;"><i class="fa-solid fa-chevron-right"></i></span>${t}</li>`).join('')}
+    </ul>
+    <div style="background:var(--bg);border-radius:8px;padding:14px 16px;border-left:3px solid var(--danger);">
+      <p style="font-size:13px;color:var(--danger);line-height:1.5;"><i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;"></i>${data.trap}</p>
+    </div>
+  `;
+}
+
+// ===== Section 3: Concept Cards =====
+function renderConceptCards() {
+  const container = document.getElementById('conceptCards');
+  container.innerHTML = concepts.map((c, i) => `
+    <div class="concept-card" onclick="this.classList.toggle('flipped')">
+      <div class="card-front">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <i class="${c.icon}" style="color:${c.color};font-size:14px;"></i>
+          <span style="font-family:'Space Grotesk';font-weight:600;font-size:14px;">${c.term}</span>
+        </div>
+        <p style="font-size:13px;color:var(--fg-muted);line-height:1.5;">${c.brief}</p>
+        <p style="font-size:11px;color:var(--fg-dim);margin-top:10px;"><i class="fa-solid fa-rotate" style="margin-right:4px;"></i>Click to flip</p>
+      </div>
+      <div class="card-back">
+        <p style="font-family:'Space Grotesk';font-weight:600;font-size:14px;color:${c.color};margin-bottom:8px;">${c.term}</p>
+        <p style="font-size:13px;color:var(--fg-muted);line-height:1.65;">${c.detail}</p>
+        <p style="font-size:11px;color:var(--fg-dim);margin-top:10px;"><i class="fa-solid fa-rotate" style="margin-right:4px;"></i>Click to flip back</p>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===== Section 3: Drag & Drop =====
+function renderDragItems() {
+  const source = document.getElementById('dragSource');
+  // Shuffle
+  const shuffled = [...dragItems].sort(() => Math.random() - 0.5);
+  source.innerHTML = shuffled.map(item => `
+    <div class="drag-item" draggable="true" data-id="${item.id}" data-zone="${item.zone}"
+      ondragstart="onDragStart(event)" ondragend="onDragEnd(event)">
+      ${item.text}
+    </div>
+  `).join('');
+
+  // Setup drop zones
+  ['dropPM', 'dropDS'].forEach(zoneId => {
+    const zone = document.getElementById(zoneId);
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('over'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('over'));
+    zone.addEventListener('drop', e => handleDrop(e, zone));
+  });
+}
+
+let draggedEl = null;
+
+function onDragStart(e) {
+  draggedEl = e.target;
+  draggedEl.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function onDragEnd(e) {
+  if (draggedEl) draggedEl.classList.remove('dragging');
+  document.querySelectorAll('.drop-zone').forEach(z => z.classList.remove('over'));
+  draggedEl = null;
+}
+
+function handleDrop(e, zone) {
+  e.preventDefault();
+  zone.classList.remove('over');
+  if (!draggedEl) return;
+
+  const itemZone = draggedEl.dataset.zone;
+  const targetZone = zone.dataset.zone;
+  const isCorrect = itemZone === targetZone;
+
+  draggedEl.classList.add('placed');
+  draggedEl.draggable = false;
+  draggedEl.removeEventListener('dragstart', onDragStart);
+  zone.appendChild(draggedEl);
+
+  dragPlaced++;
+  if (isCorrect) {
+    dragCorrect++;
+    score++;
+  }
+  maxScore++;
+
+  // Show zone status when all items placed
+  if (dragPlaced === dragItems.length) {
+    const feedback = document.getElementById('dragFeedback');
+    feedback.style.display = 'block';
+    if (dragCorrect === dragItems.length) {
+      feedback.innerHTML = '<span style="color:var(--success);"><i class="fa-solid fa-check-circle"></i> Perfect! ' + dragCorrect + '/' + dragItems.length + ' correct.</span> You clearly understand the PM vs Data Scientist boundary.';
+      showToast('All correct! +' + dragCorrect + ' points!', 'fa-solid fa-star', 'var(--accent)');
+    } else {
+      feedback.innerHTML = '<span style="color:var(--warm);"><i class="fa-solid fa-circle-info"></i> ' + dragCorrect + '/' + dragItems.length + ' correct.</span> The key insight: PMs own the "what" and "why" (problem, metrics, UX, go-to-market). Data Scientists own the "how" (model selection, training, evaluation). There\'s overlap — and that\'s where great collaboration happens.';
+    }
+    // Mark zones
+    document.querySelectorAll('.drop-zone').forEach(z => z.classList.add('correct-zone'));
   }
 }
 
-function showLC(i){
-  var steps=document.querySelectorAll('#lcSteps .lc-step');
-  for(var j=0;j<steps.length;j++){
-    steps[j].classList.toggle('on',j===i);
-    steps[j].querySelector('span').style.color=j===i?'var(--gold)':'var(--fg3)';
-    steps[j].querySelector('p').style.color=j===i?'var(--fg)':'var(--fg2)';
+// ===== Section 4: Decision Tree =====
+function decisionChoice(step, choice) {
+  decisionPath[step] = choice;
+
+  // Mark chosen node
+  const stepEl = document.getElementById('dt-step-' + step);
+  stepEl.querySelectorAll('.decision-node').forEach(n => {
+    n.classList.remove('chosen');
+    n.style.pointerEvents = 'none';
+  });
+  event.currentTarget.classList.add('chosen');
+
+  // Show next step or result
+  const nextStep = step + 1;
+  if (nextStep < 3) {
+    setTimeout(() => {
+      document.getElementById('dt-step-' + nextStep).style.display = 'block';
+      document.getElementById('dt-step-' + nextStep).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 300);
+  } else {
+    showDecisionResult();
   }
-  var l=LC[i],d=document.getElementById('lcDetail');
-  var html='<div style="display:flex;align-items:center;gap:10px;margin-bottom:20px"><div style="width:32px;height:32px;border-radius:8px;background:'+(l.c==='var(--gold)'?'var(--gold-d)':'var(--blue-d)')+';display:flex;align-items:center;justify-content:center;color:'+l.c+';font-size:13px"><i class="fa-solid '+l.icon+'"></i></div><h3 style="font-size:17px;font-weight:700">'+l.t+'</h3></div>';
-  html+='<p style="font-size:10px;font-weight:600;color:var(--fg3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px">PM Responsibilities</p><ul style="list-style:none;margin-bottom:18px">';
-  for(var k=0;k<l.items.length;k++){
-    html+='<li style="font-size:13px;color:var(--fg2);line-height:1.8;padding-left:14px;position:relative;font-weight:300"><span style="position:absolute;left:0;color:'+l.c+';font-size:7px;top:6px"><i class="fa-solid fa-chevron-right"></i></span>'+l.items[k]+'</li>';
-  }
-  html+='</ul><div style="background:var(--red-d);border-radius:8px;padding:14px 16px;border-left:2px solid var(--red)"><p style="font-size:12px;color:var(--red);line-height:1.6;font-weight:400"><i class="fa-solid fa-triangle-exclamation" style="margin-right:6px;font-size:11px"></i>'+l.trap+'</p></div>';
-  d.innerHTML=html;
 }
 
-var dragEl=null;
-function dds(e){dragEl=e.target;dragEl.classList.add('dragging');e.dataTransfer.effectAllowed='move'}
-function dde(){if(dragEl)dragEl.classList.remove('dragging');var zones=document.querySelectorAll('.dzone');for(var i=0;i<zones.length;i++)zones[i].classList.remove('over');dragEl=null}
-function hDrop(e,zone){
-  e.preventDefault();zone.classList.remove('over');if(!dragEl)return;
-  var ok=dragEl.dataset.z===zone.dataset.z;
-  dragEl.classList.add('placed');dragEl.draggable=false;dragEl.ondragstart=null;
-  zone.appendChild(dragEl);dPlaced++;mx++;
-  if(ok){dCorrect++;sc++;floatPts()}
-  if(dPlaced===DI.length){
-    var zones2=document.querySelectorAll('.dzone');
-    for(var i=0;i<zones2.length;i++)zones2[i].classList.add('done');
-    var f=document.getElementById('dFb');f.style.display='block';
-    if(dCorrect===DI.length){
-      f.innerHTML='<span style="color:var(--green)"><i class="fa-solid fa-check-circle"></i> Perfect — '+dCorrect+'/'+DI.length+'.</span> You understand the PM vs. Data Scientist boundary.';
-      toast('+'+dCorrect+' points!','fa-solid fa-star','var(--gold)');
-    }else{
-      f.innerHTML='<span style="color:var(--gold)"><i class="fa-solid fa-circle-info"></i> '+dCorrect+'/'+DI.length+'.</span> PMs own the "what" and "why" (problem, metrics, UX). Data Scientists own the "how" (model, training, evaluation).';
+function showDecisionResult() {
+  const result = document.getElementById('dt-result');
+  result.style.display = 'block';
+
+  // Path: [core?, existing solution?, has team?]
+  const [core, existing, team] = decisionPath;
+
+  let recommendation, detail, icon, bg, border;
+
+  if (core === 'no' && existing === 'yes') {
+    recommendation = 'BUY: Use an Existing SaaS / API';
+    detail = 'Since this isn\'t core and an existing solution covers your needs, go with a vendor (e.g., a RAG-as-a-service platform like Glean, or build on top of OpenAI Assistants API). You\'ll ship in weeks, not months. Negotiate data privacy terms since this handles internal docs.';
+    icon = 'fa-solid fa-cart-shopping';
+    bg = 'var(--success-dim)';
+    border = 'var(--success)';
+    score++; maxScore++;
+  } else if (core === 'no' && existing === 'no' && team === 'no') {
+    recommendation = 'BUY + CUSTOMIZE: Use a platform with configuration';
+    detail = 'No off-the-shelf solution fits, but building from scratch isn\'t feasible. Use a configurable AI platform (e.g., Microsoft Copilot Studio, AWS Bedrock) and customize the RAG pipeline. Hire a contractor for the initial build if needed.';
+    icon = 'fa-solid fa-wrench';
+    bg = 'var(--warm-dim)';
+    border = 'var(--warm)';
+    maxScore++;
+  } else if (core === 'no' && existing === 'no' && team === 'yes') {
+    recommendation = 'BUILD (Lightweight): Custom RAG on top of an LLM API';
+    detail = 'You have the team and need custom behavior, but since it\'s not core, keep it lean. Build a RAG pipeline over your HR docs using an LLM API (not fine-tuning). This minimizes maintenance while giving you full control over the experience.';
+    icon = 'fa-solid fa-hammer';
+    bg = 'var(--accent-dim)';
+    border = 'var(--accent)';
+    maxScore++;
+  } else if (core === 'yes') {
+    recommendation = 'BUILD: Invest in a Custom Solution';
+    detail = 'If this is core to your competitive advantage, you need full ownership of the model, data pipeline, and infrastructure. Accept the higher cost and longer timeline as a strategic investment. Build proprietary data moats that competitors can\'t replicate.';
+    icon = 'fa-solid fa-rocket';
+    bg = 'var(--accent-dim)';
+    border = 'var(--accent)';
+    maxScore++;
+  }
+
+  result.style.background = bg;
+  result.style.borderColor = border;
+  result.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+      <i class="${icon}" style="color:${border};font-size:20px;"></i>
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:17px;color:${border};">${recommendation}</span>
+    </div>
+    <p style="font-size:14px;color:var(--fg-muted);line-height:1.7;">${detail}</p>
+    <p style="font-size:12px;color:var(--fg-dim);margin-top:12px;">Your path: ${decisionPath.map(c => c === 'yes' ? 'Yes' : 'No').join(' → ')}</p>
+  `;
+
+  showToast('Decision complete!', 'fa-solid fa-route', border);
+}
+
+// ===== Section 5: Metrics Quiz =====
+function renderMetricsQuiz() {
+  const container = document.getElementById('metricsQuiz');
+  container.innerHTML = metricsQuestions.map((q, qi) => `
+    <div>
+      <p style="font-size:14px;font-weight:600;margin-bottom:10px;">Goal: "${q.goal}"</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="mq-${qi}">
+        ${q.options.map((opt, oi) => `
+          <button class="quiz-option" style="font-size:13px;padding:12px 14px;" data-answer="${oi === q.correct ? 'correct' : 'wrong'}" onclick="answerMetrics(${qi}, ${oi}, this)">
+            <span class="option-letter" style="width:26px;height:26px;font-size:11px;">${'ABCD'[oi]}</span>
+            <span>${opt}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div id="mq-fb-${qi}" style="margin-top:8px;font-size:13px;display:none;"></div>
+    </div>
+  `).join('');
+}
+
+function answerMetrics(qi, oi, btn) {
+  if (metricsAnswered[qi] !== undefined) return;
+  metricsAnswered[qi] = oi;
+  maxScore++;
+
+  const q = metricsQuestions[qi];
+  const isCorrect = oi === q.correct;
+  if (isCorrect) score++;
+
+  const options = document.querySelectorAll(`#mq-${qi} .quiz-option`);
+  options.forEach(o => {
+    o.style.pointerEvents = 'none';
+    if (o.dataset.answer === 'correct') o.classList.add('correct');
+    else if (o === btn && !isCorrect) o.classList.add('wrong');
+  });
+
+  const fb = document.getElementById('mq-fb-' + qi);
+  fb.style.display = 'block';
+  fb.innerHTML = isCorrect
+    ? `<span style="color:var(--success);"><i class="fa-solid fa-check-circle"></i> Correct.</span> ${q.explanation}`
+    : `<span style="color:var(--danger);"><i class="fa-solid fa-times-circle"></i> Not quite.</span> ${q.explanation}`;
+}
+
+// ===== Section 5: Pitfall Quiz =====
+function answerPitfall(btn) {
+  if (pitfallAnswered) return;
+  pitfallAnswered = true;
+  maxScore++;
+
+  const options = document.querySelectorAll('#pitfallOptions .quiz-option');
+  options.forEach(o => {
+    o.style.pointerEvents = 'none';
+    if (o.dataset.answer === 'correct') o.classList.add('correct');
+    else if (o === btn) o.classList.add('wrong');
+  });
+
+  const feedback = document.getElementById('pitfallFeedback');
+  if (btn.dataset.answer === 'correct') {
+    score++;
+    feedback.innerHTML = '<span style="color:var(--success);"><i class="fa-solid fa-check-circle"></i> Excellent!</span> The <strong>fitness gap</strong> is when model metrics look great but user experience is poor. Clicks ≠ satisfaction. The model learned to recommend popular items (easy clicks) but ignored diversity, freshness, and personalization depth — the things that actually keep users engaged.';
+  } else {
+    feedback.innerHTML = '<span style="color:var(--danger);"><i class="fa-solid fa-times-circle"></i> Not quite.</span> The answer is the <strong>fitness gap</strong>. 94% accuracy on clicks doesn\'t capture diversity, freshness, or long-term satisfaction. The model optimized for the wrong proxy metric. This is one of the most common AI PM mistakes.';
+  }
+  feedback.style.display = 'block';
+  showToast(btn.dataset.answer === 'correct' ? '+1 point!' : 'Check the explanation', btn.dataset.answer === 'correct' ? 'fa-solid fa-star' : 'fa-solid fa-circle-info', btn.dataset.answer === 'correct' ? 'var(--accent)' : 'var(--warm)');
+}
+
+// ===== Section 6: Brief =====
+function showFrameworkAnswer() {
+  const el = document.getElementById('frameworkAnswer');
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Check if user wrote anything
+    const hasInput = [1,2,3,4].some(i => document.getElementById('brief'+i).value.trim().length > 20);
+    if (hasInput) {
+      showToast('Great effort! Compare your thinking to the framework.', 'fa-solid fa-lightbulb', 'var(--warm)');
+    } else {
+      showToast('Try writing your own answers first, then compare!', 'fa-solid fa-pen', 'var(--fg-muted)');
+    }
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function clearBrief() {
+  [1,2,3,4].forEach(i => document.getElementById('brief'+i).value = '');
+  document.getElementById('frameworkAnswer').style.display = 'none';
+}
+
+// ===== Score display (shown in last section) =====
+const scoreObserver = new MutationObserver(() => {
+  const el = document.getElementById('finalScore');
+  if (el && document.getElementById('section-6').classList.contains('active')) {
+    el.textContent = score + '/' + maxScore;
+    const msg = document.getElementById('scoreMessage');
+    if (maxScore === 0) {
+      msg.textContent = 'Complete the exercises in previous sections to see your score.';
+    } else {
+      const pct = Math.round((score / maxScore) * 100);
+      if (pct >= 90) msg.textContent = 'Outstanding! You have a strong intuitive grasp of AI PM fundamentals.';
+      else if (pct >= 70) msg.textContent = 'Solid work! Review the explanations for the ones you missed.';
+      else if (pct >= 50) msg.textContent = 'Good start! Revisit the sections with missed questions — the explanations are key.';
+      else msg.textContent = 'Keep learning! Try going through the tutorial again and reading each explanation carefully.';
     }
   }
-  dragEl=null;
-}
+});
+scoreObserver.observe(document.body, { attributes: true, subtree: true, attributeFilter: ['class'] });
 
-function buildDT(){
-  var wrap=document.getElementById('dtree');
-  for(var i=0;i<DTQ.length;i++){var q=DTQ[i];
-    wrap.innerHTML+='<div id="dts'+i+'" style="display:'+(i===0?'block':'none')+'"><p style="font-weight:500;font-size:14px;margin-bottom:14px;color:var(--fg)"><span style="color:var(--gold);font-weight:700">Q'+(i+1)+':</span> '+q.q+'</p><div class="grid gap-3 resp-col" style="grid-template-columns:1fr 1fr"><div class="dnode" onclick="dtC('+i+',\'yes\')"><div style="display:flex;align-items:center;gap:10px"><div style="width:30px;height:30px;border-radius:8px;background:var(--green-d);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:11px;flex-shrink:0"><i class="fa-solid fa-check"></i></div><div><p style="font-weight:600;font-size:13px">Yes</p><p style="font-size:11px;color:var(--fg3);font-weight:300">'+q.yes+'</p></div></div></div><div class="dnode" onclick="dtC('+i+',\'no\')"><div style="display:flex;align-items:center;gap:10px"><div style="width:30px;height:30px;border-radius:8px;background:var(--red-d);display:flex;align-items:center;justify-content:center;color:var(--red);font-size:11px;flex-shrink:0"><i class="fa-solid fa-xmark"></i></div><div><p style="font-weight:600;font-size:13px">No</p><p style="font-size:11px;color:var(--fg3);font-weight:300">'+q.no+'</p></div></div></div></div></div>';
+// ===== Keyboard navigation =====
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (currentSection < totalSections - 1) goToSection(currentSection + 1);
   }
-}
-function dtC(step,choice){
-  dPath[step]=choice;
-  var nodes=document.querySelectorAll('#dts'+step+' .dnode');
-  for(var i=0;i<nodes.length;i++)nodes[i].classList.add('locked');
-  event.currentTarget.classList.add('chosen');
-  if(step<2){setTimeout(function(){document.getElementById('dts'+(step+1)).style.display='block';document.getElementById('dts'+(step+1)).scrollIntoView({behavior:'smooth',block:'nearest'})},250)}
-  else showDTRes();
-}
-function showDTRes(){
-  mx++;
-  var c=dPath[0],e=dPath[1],t=dPath[2];
-  var r=document.getElementById('dtRes');r.style.display='block';
-  var rec,det,ic,bg,bd;
-  if(c==='no'&&e==='yes'){rec='BUY: Use an Existing SaaS / API';det='Not core + existing solution fits = go vendor (Glean, OpenAI Assistants API). Ship in weeks. Negotiate data privacy for internal docs.';ic='fa-cart-shopping';bg='var(--green-d)';bd='var(--green)';sc++}
-  else if(c==='no'&&e==='no'&&t==='no'){rec='BUY + CUSTOMIZE: Configurable Platform';det='No off-the-shelf fit, but can\'t build from scratch. Use Copilot Studio or Bedrock, customize the RAG pipeline. Consider a contractor for initial build.';ic='fa-wrench';bg='var(--gold-d)';bd='var(--gold)'}
-  else if(c==='no'&&e==='no'&&t==='yes'){rec='BUILD (Lightweight): Custom RAG on LLM API';det='You have the team, need custom behavior, but it\'s not core. Build RAG over HR docs using an LLM API (not fine-tuning). Full control, minimal maintenance.';ic='fa-hammer';bg='var(--gold-d)';bd='var(--gold)'}
-  else{rec='BUILD: Full Custom Investment';det='Core differentiator = full ownership. Accept higher cost and timeline as strategic investment. Build proprietary data moats competitors can\'t replicate.';ic='fa-rocket';bg='var(--gold-d)';bd='var(--gold)'}
-  r.style.background=bg;r.style.borderColor=bd;
-  r.innerHTML='<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px"><i class="fa-solid '+ic+'" style="color:'+bd+';font-size:18px"></i><span style="font-family:Fraunces,serif;font-weight:700;font-size:16px;color:'+bd+'">'+rec+'</span></div><p style="font-size:13px;color:var(--fg2);line-height:1.75;font-weight:300">'+det+'</p><p style="font-size:11px;color:var(--fg3);margin-top:12px;font-weight:300">Path: '+dPath.map(function(x){return x==='yes'?'Yes':'No'}).join(' &rarr; ')+'</p>';
-  toast('Decision complete','fa-solid fa-route',bd);
-}
-
-function amq(qi,oi,btn){
-  if(mqA[qi]!==undefined)return;mqA[qi]=oi;mx++;
-  var q=MQ[qi],ok=oi===q.correct;if(ok)sc++;
-  var opts=document.querySelectorAll('#mq'+qi+' .qopt');
-  for(var i=0;i<opts.length;i++){
-    opts[i].classList.add('locked');
-    if(+opts[i].dataset.a)opts[i].classList.add('correct');
-    else if(opts[i]===btn)opts[i].classList.add('wrong');
-  }
-  var f=document.getElementById('mqf'+qi);f.style.display='block';
-  if(ok){f.innerHTML='<span style="color:var(--green)"><i class="fa-solid fa-check-circle"></i> Correct.</span> '+q.why;floatPts();toast('+1 point','fa-solid fa-star','var(--gold)')}
-  else{f.innerHTML='<span style="color:var(--red)"><i class="fa-solid fa-times-circle"></i> Not quite.</span> '+q.why}
-}
-
-function apf(btn){
-  if(pfd)return;pfd=true;mx++;
-  var opts=document.querySelectorAll('#pfO .qopt');
-  for(var i=0;i<opts.length;i++){
-    opts[i].classList.add('locked');
-    if(+opts[i].dataset.a)opts[i].classList.add('correct');
-    else if(opts[i]===btn)opts[i].classList.add('wrong');
-  }
-  var f=document.getElementById('pfF');f.style.display='block';
-  if(+btn.dataset.a){
-    sc++;
-    f.innerHTML='<span style="color:var(--green)"><i class="fa-solid fa-check-circle"></i> Excellent.</span> The <strong style="color:var(--fg)">fitness gap</strong>: 94% click accuracy didn\'t capture diversity, freshness, or satisfaction. The model optimized for the wrong proxy metric.';
-    floatPts();toast('+1 point','fa-solid fa-star','var(--gold)');
-  }else{
-    f.innerHTML='<span style="color:var(--red)"><i class="fa-solid fa-times-circle"></i> Not quite.</span> The answer is the <strong style="color:var(--fg)">fitness gap</strong> — the distance between ML metrics and what users actually experience. Clicks does not equal satisfaction.';
-  }
-}
-
-function showFA(){
-  var el=document.getElementById('fa');
-  if(el.style.display==='none'){
-    el.style.display='block';el.scrollIntoView({behavior:'smooth',block:'nearest'});
-    var has=false;
-    for(var i=1;i<=4;i++){if(document.getElementById('b'+i).value.trim().length>20){has=true;break}}
-    toast(has?'Compare your thinking to the framework':'Try writing your own answers first','fa-solid fa-lightbulb','var(--gold)');
-  }else el.style.display='none';
-}
-
-var so=new MutationObserver(function(){
-  var el=document.getElementById('fScore');
-  if(el&&document.getElementById('s6').classList.contains('visible')){
-    el.textContent=sc+'/'+mx;
-    var m=document.getElementById('fMsg');
-    if(!mx)m.textContent='Complete exercises in previous sections to see your score.';
-    else{var p=Math.round(sc/mx*100);m.textContent=p>=90?'Outstanding — strong grasp of AI PM fundamentals.':p>=70?'Solid work — review explanations for missed ones.':p>=50?'Good start — revisit sections with missed questions.':'Keep learning — go through again and read each explanation.'}
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (currentSection > 0) goToSection(currentSection - 1);
   }
 });
-so.observe(document.body,{attributes:true,subtree:true,attributeFilter:['class']});
 
-document.addEventListener('keydown',function(e){
-  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT')return;
-  if(e.key==='ArrowRight'||e.key==='ArrowDown'){e.preventDefault();if(cur<6)go(cur+1)}
-  if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();if(cur>0)go(cur-1)}
-});
-
+// ===== Start =====
 init();
 </script>
 </body>
